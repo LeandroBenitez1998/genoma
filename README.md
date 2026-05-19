@@ -33,13 +33,33 @@ Genoma es la interfaz web que permite **monitorear, evaluar y evolucionar** runs
 
 ## 🚀 Instalación & Startup
 
-### One-liner (recomendado)
+### NPM CLI (Recomendado — usuarios)
+
+Instala Genoma globalmente desde npm registry:
+
+```bash
+npx genoma@latest serve
+```
+
+Esto:
+- ✅ Instala dependencias (Node.js, Python 3.10+, pnpm)
+- ✅ Inicia backend en `http://localhost:8000`
+- ✅ Inicia frontend en `http://localhost:3000`
+- ✅ Inicia MCP server en stdio (para agents)
+- ✅ Maneja shutdown graceful en Ctrl+C
+
+**Requisitos:**
+- Node.js 18+
+- Python 3.10+
+- `ANTHROPIC_API_KEY` (u otras API keys para evolution)
+
+### Local Development (./run.sh)
 
 ```bash
 ./run.sh
 ```
 
-Inicia backend (:8000) + frontend (:3000) simultáneamente. Ctrl+C stops ambos.
+Inicia backend (:8000) + frontend (:3000) + MCP en paralelo. Ctrl+C kills todos.
 
 ### Manual setup
 
@@ -71,7 +91,26 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 
 ## 🔌 MCP / Comunicación
 
-El dashboard se comunica con el backend por 3 canales:
+Genoma expone 3 canales de comunicación:
+
+### MCP Server (stdio) — Para Agents
+
+Agents (Claude Code, Codex, etc.) se conectan via MCP protocol (stdio transport). 4 tools disponibles:
+
+| Tool | Input | Output |
+|---|---|---|
+| `ingest_run` | `run_id`, `agent_name`, `started_at`, `task_name`, `outcome` + optionals | Inserted/updated run ID |
+| `ingest_trace` | `agent`, `agent_version`, `timestamp`, `task`, `outcome` + optionals | Trace ID + canonical run ID |
+| `query_runs` | `agent_name`, `outcome`, `repo`, `since`, `until`, `limit` (optional) | Array of past runs |
+| `get_agent_stats` | `agent_name` (optional) | Per-agent performance summary |
+
+Ejemplo (Claude Code):
+```bash
+# Genoma MCP server runs automatically when you do: npx genoma serve
+# Claude Code agent can then invoke tools via stdio
+```
+
+El dashboard se comunica con el backend por 2 canales adicionales:
 
 ### REST API (`http://localhost:8000`)
 
