@@ -1,16 +1,14 @@
 """
 Genoma MCP Server — 4 telemetry ingestion tools for AI agents.
 
-Supports both stdio (default) and SSE transports.
+Supports stdio transport.
 Run:
-    python3 -m backend.mcp_server                         # stdio
-    python3 -m backend.mcp_server --transport sse --port 8001  # SSE
+    python3 -m backend.mcp_server
 """
 
 from __future__ import annotations
 
 import asyncio
-import sys
 from typing import Any
 
 from mcp.server import Server
@@ -35,9 +33,6 @@ server = Server(
         "per-agent performance statistics."
     ),
 )
-
-
-# ── Tool definitions ──────────────────────────────────────────────────
 
 
 @server.list_tools()
@@ -118,9 +113,6 @@ async def list_tools() -> ListToolsResult:
             ),
         ]
     )
-
-
-# ── Tool implementations ──────────────────────────────────────────────
 
 
 @server.call_tool()
@@ -248,17 +240,10 @@ async def get_agent_stats(args: dict[str, Any]) -> CallToolResult:
     )
 
 
-# ── Entry point ───────────────────────────────────────────────────────
-
-
 async def main() -> None:
     """Start MCP server with stdio transport."""
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            server.create_initialization_options(),
-        )
+    async with stdio_server(server) as (read_stream, write_stream):
+        await read_stream.read()
 
 
 if __name__ == "__main__":
