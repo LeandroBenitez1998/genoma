@@ -1,0 +1,1 @@
+job_tracker.py provides a JobTracker class with EvolutionJob dataclass to manage evolution job lifecycles, tracking status transitions across defined phases, logging output, extracting scores and iteration progress, and persisting job state to disk.

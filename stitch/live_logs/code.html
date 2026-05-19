@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hermes - Live Logs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1a1c1e",
+                        "surface-tint": "#446083",
+                        "on-tertiary-container": "#8b8a89",
+                        "surface-container": "#eeedf1",
+                        "inverse-surface": "#2f3033",
+                        "tertiary-container": "#232323",
+                        "on-surface": "#1a1c1e",
+                        "on-primary-fixed-variant": "#2c486a",
+                        "outline": "#73777f",
+                        "surface-container-high": "#e9e8eb",
+                        "surface-bright": "#faf9fc",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-secondary-fixed": "#380d00",
+                        "tertiary": "#0d0d0d",
+                        "surface": "#faf9fc",
+                        "outline-variant": "#c3c6cf",
+                        "on-primary-fixed": "#001c37",
+                        "surface-container-highest": "#e3e2e5",
+                        "primary-fixed-dim": "#acc9f1",
+                        "primary-fixed": "#d2e4ff",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#dad9dd",
+                        "primary-container": "#002444",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#ffb59b",
+                        "secondary-fixed": "#ffdbcf",
+                        "on-surface-variant": "#43474e",
+                        "inverse-on-surface": "#f1f0f3",
+                        "secondary-container": "#fe753f",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#000e20",
+                        "on-secondary-container": "#631d00",
+                        "on-error": "#ffffff",
+                        "secondary": "#a93800",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e3e2e5",
+                        "on-primary-container": "#708cb2",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-tertiary-fixed": "#1b1c1b",
+                        "surface-container-low": "#f4f3f6",
+                        "on-secondary-fixed-variant": "#812900",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9fc",
+                        "inverse-primary": "#acc9f1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "stack-tight": "4px",
+                        "container-padding": "24px",
+                        "max-width": "1440px",
+                        "gutter": "16px",
+                        "component-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-data": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-data": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "mono-label": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .log-row {
+            display: grid;
+            grid-template-columns: 140px 80px 120px 1fr;
+            gap: 16px;
+            padding: 8px 16px;
+            border-bottom: 1px solid theme('colors.outline-variant' / 30%);
+        }
+        .log-row:hover {
+            background-color: theme('colors.surface-container-lowest');
+        }
+        .log-row.error {
+            background-color: theme('colors.error-container' / 20%);
+        }
+        .log-row.error:hover {
+            background-color: theme('colors.error-container' / 40%);
+        }
+        .log-row.warn {
+            background-color: theme('colors.secondary-container' / 10%);
+        }
+        
+        /* Custom scrollbar for terminal feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface-container-low');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen overflow-hidden flex flex-col md:flex-row">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-full py-container-padding gap-component-gap bg-surface-container-low docked left-0 w-64 h-screen border-r border-outline-variant/30 flat no shadows z-40">
+<div class="px-gutter mb-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-xl" data-icon="hub">hub</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary">Hermes Control</h1>
+<p class="font-label-caps text-label-caps tracking-widest text-on-surface-variant">v4.2.0-Alpha</p>
+</div>
+</div>
+</div>
+<div class="px-gutter mb-4">
+<button class="w-full bg-primary text-on-primary font-mono-label text-mono-label py-2 px-4 rounded flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                New Experiment
+            </button>
+</div>
+<div class="flex-1 overflow-y-auto px-2 space-y-1">
+<!-- Tabs -->
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-mono-label text-mono-label">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="extension">extension</span>
+<span class="font-mono-label text-mono-label">Skill Hub</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-mono-label text-mono-label">Evolution</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-mono-label text-mono-label">Datasets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-mono-label text-mono-label">Metrics</span>
+</a>
+<!-- Active Tab -->
+<a class="flex items-center gap-3 px-4 py-2 rounded text-primary border-r-4 border-secondary bg-surface-container-highest scale-98 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span class="font-mono-label text-mono-label">Live Logs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-mono-label text-mono-label">Curator</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all mt-8" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-mono-label text-mono-label">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 bg-surface">
+<!-- TopAppBar (Mobile) - Simplified for demo, hidden on desktop -->
+<header class="md:hidden flex justify-between items-center w-full px-gutter h-16 z-50 bg-surface border-b border-outline-variant/30 flat no shadows">
+<h1 class="font-headline-sm text-headline-sm font-bold tracking-tighter text-primary">Hermes</h1>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span> Syncing
+                </span>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Log Terminal Header / Controls -->
+<div class="px-container-padding py-4 border-b border-outline-variant/30 bg-surface-container-lowest flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
+<div class="flex items-center gap-4">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface m-0">System Output Stream</h2>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="font-mono-label text-mono-label text-primary">Streaming</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-2">Connected to ws://hermes-core:8080</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-surface border border-outline-variant rounded font-mono-data text-mono-data text-on-surface w-64 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm placeholder-on-surface-variant/50" placeholder="Filter logs (regex supported)..." type="text"/>
+</div>
+<div class="flex border border-outline-variant rounded overflow-hidden shadow-sm">
+<button class="px-3 py-1.5 bg-surface hover:bg-surface-container-high font-mono-label text-mono-label text-on-surface-variant border-r border-outline-variant transition-colors">ALL</button>
+<button class="px-3 py-1.5 bg-surface hover:bg-surface-container-high font-mono-label text-mono-label text-on-surface-variant border-r border-outline-variant transition-colors">INFO</button>
+<button class="px-3 py-1.5 bg-secondary-container/20 text-secondary font-mono-label text-mono-label border-r border-outline-variant">WARN</button>
+<button class="px-3 py-1.5 bg-surface hover:bg-surface-container-high font-mono-label text-mono-label text-on-surface-variant transition-colors">ERR</button>
+</div>
+<button class="p-1.5 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-high shadow-sm transition-colors" title="Pause Stream">
+<span class="material-symbols-outlined text-sm" data-icon="pause">pause</span>
+</button>
+<button class="p-1.5 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-high shadow-sm transition-colors" title="Clear Logs">
+<span class="material-symbols-outlined text-sm" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Log Terminal Body -->
+<div class="flex-1 overflow-auto bg-surface-container-lowest font-mono-data text-mono-data text-on-surface p-2 shadow-inner">
+<div class="log-row font-mono-label text-mono-label text-on-surface-variant bg-surface-container-low border-none sticky top-0 z-10 py-2 uppercase">
+<div>Timestamp</div>
+<div>Level</div>
+<div>Source</div>
+<div>Message / Payload</div>
+</div>
+<div class="log-row">
+<div class="text-on-surface-variant">2023-10-27T14:32:01.102Z</div>
+<div class="text-primary font-bold">INFO</div>
+<div class="text-surface-tint">[hermes-core]</div>
+<div>Initialization sequence completed successfully. Ready for tasks.</div>
+</div>
+<div class="log-row">
+<div class="text-on-surface-variant">2023-10-27T14:32:05.441Z</div>
+<div class="text-primary font-bold">INFO</div>
+<div class="text-surface-tint">[task-manager]</div>
+<div>Received new experiment manifest: <span class="text-primary-container bg-primary-fixed-dim/30 px-1 rounded">exp-092-alpha</span></div>
+</div>
+<div class="log-row">
+<div class="text-on-surface-variant">2023-10-27T14:32:06.010Z</div>
+<div class="text-on-primary-fixed-variant font-bold">PROCESS</div>
+<div class="text-surface-tint">[dataset-loader]</div>
+<div>Starting ingestion of standard-eval-set-v4... (0/15000 items)</div>
+</div>
+<div class="log-row warn">
+<div class="text-on-surface-variant">2023-10-27T14:32:12.882Z</div>
+<div class="text-secondary font-bold">WARN</div>
+<div class="text-surface-tint">[memory-alloc]</div>
+<div>High memory usage detected in worker pool B. Threshold 85% exceeded. Initiating graceful GC.</div>
+</div>
+<div class="log-row">
+<div class="text-on-surface-variant">2023-10-27T14:32:15.105Z</div>
+<div class="text-primary font-bold">INFO</div>
+<div class="text-surface-tint">[dataset-loader]</div>
+<div>Ingestion complete. (15000/15000 items). Duration: 9.095s</div>
+</div>
+<div class="log-row error">
+<div class="text-on-surface-variant">2023-10-27T14:32:18.991Z</div>
+<div class="text-error font-bold">ERR</div>
+<div class="text-surface-tint">[eval-engine]</div>
+<div>
+                    Failed to connect to external model API endpoint. Timeout after 3000ms.
+                    <div class="mt-2 p-2 bg-error-container/50 border border-error/20 rounded font-mono-data text-[11px] text-on-error-container overflow-x-auto whitespace-pre">
+{
+  "error_code": "ECONNRESET",
+  "endpoint": "https://api.external-model.test/v1/eval",
+  "retry_count": 3,
+  "stack": "Error: read ECONNRESET\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:217:20)"
+}
+                    </div>
+</div>
+</div>
+<div class="log-row">
+<div class="text-on-surface-variant">2023-10-27T14:32:20.001Z</div>
+<div class="text-primary font-bold">INFO</div>
+<div class="text-surface-tint">[eval-engine]</div>
+<div>Retrying connection... Attempt 4/5.</div>
+</div>
+<div class="log-row">
+<div class="text-on-surface-variant">2023-10-27T14:32:21.450Z</div>
+<div class="text-primary font-bold">INFO</div>
+<div class="text-surface-tint">[eval-engine]</div>
+<div>Connection established. Resuming evaluation pipeline.</div>
+</div>
+<div class="log-row">
+<div class="text-on-surface-variant">2023-10-27T14:32:25.112Z</div>
+<div class="text-on-primary-fixed-variant font-bold">PROCESS</div>
+<div class="text-surface-tint">[eval-engine]</div>
+<div>Processing batch 1/150... [=================&gt;   ] 85%</div>
+</div>
+<!-- Loading indicator for tail -->
+<div class="px-4 py-2 mt-2 flex items-center gap-2 text-on-surface-variant/50 font-mono-data text-sm border-t border-outline-variant/10">
+<span class="material-symbols-outlined animate-spin text-sm" data-icon="sync">sync</span>
+                Waiting for new logs...
+            </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,165 @@
+{
+  "active_context": [
+    {
+      "order": 3,
+      "path": "_index.md",
+      "tokens": 546,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "backend/_index.md",
+      "tokens": 198,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "docs/_index.md",
+      "tokens": 275,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "frontend/_index.md",
+      "tokens": 409,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "meta/_index.md",
+      "tokens": 147,
+      "type": "summary"
+    },
+    {
+      "order": 1,
+      "path": "backend/backend/_index.md",
+      "tokens": 423,
+      "type": "summary"
+    },
+    {
+      "abstractPath": "backend/backend/init.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "backend/backend/init.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "backend/backend/job_tracker.abstract.md",
+      "abstractTokens": 62,
+      "importance": 50,
+      "path": "backend/backend/job_tracker.md",
+      "tokens": 62,
+      "type": "context"
+    },
+    {
+      "abstractPath": "backend/backend/main.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "backend/backend/main.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "backend/backend/requirements.abstract.md",
+      "abstractTokens": 51,
+      "importance": 50,
+      "path": "backend/backend/requirements.md",
+      "tokens": 51,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "docs/api/context.md",
+      "tokens": 55,
+      "type": "context"
+    },
+    {
+      "abstractPath": "docs/api/hermes_api_openapi_specification.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "docs/api/hermes_api_openapi_specification.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "frontend/hermes_dashboard/architecture_overview.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "frontend/hermes_dashboard/architecture_overview.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "frontend/src/components/sidebar_navigation_component.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "frontend/src/components/sidebar_navigation_component.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "frontend/src/context.md",
+      "tokens": 49,
+      "type": "context"
+    },
+    {
+      "abstractPath": "frontend/src/functioncallingpage.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "frontend/src/functioncallingpage.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "frontend/src/lib/api_client_library.abstract.md",
+      "abstractTokens": 59,
+      "importance": 50,
+      "path": "frontend/src/lib/api_client_library.md",
+      "tokens": 59,
+      "type": "context"
+    },
+    {
+      "abstractPath": "frontend/src/page.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "frontend/src/page.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "frontend/src/settingspage.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "frontend/src/settingspage.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "frontend/src/sidebar.abstract.md",
+      "abstractTokens": 0,
+      "importance": 50,
+      "path": "frontend/src/sidebar.md",
+      "tokens": 0,
+      "type": "context"
+    },
+    {
+      "abstractPath": "meta/curation_context/empty_context.abstract.md",
+      "abstractTokens": 47,
+      "importance": 50,
+      "path": "meta/curation_context/empty_context.md",
+      "tokens": 47,
+      "type": "context"
+    }
+  ],
+  "generated_at": "2026-04-28T03:48:43.119Z",
+  "lane_tokens": {
+    "contexts": 323,
+    "stubs": 0,
+    "summaries": 1998
+  },
+  "source_fingerprint": "f717f55629192fff9133dba5a7fa2b99fdf11cd9cedfa38aab2cc7247db0c17b",
+  "total_tokens": 2321,
+  "version": 1
+}

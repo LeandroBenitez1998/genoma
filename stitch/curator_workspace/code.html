@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hermes - Curator Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1a1c1e",
+                        "surface-tint": "#446083",
+                        "on-tertiary-container": "#8b8a89",
+                        "surface-container": "#eeedf1",
+                        "inverse-surface": "#2f3033",
+                        "tertiary-container": "#232323",
+                        "on-surface": "#1a1c1e",
+                        "on-primary-fixed-variant": "#2c486a",
+                        "outline": "#73777f",
+                        "surface-container-high": "#e9e8eb",
+                        "surface-bright": "#faf9fc",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-secondary-fixed": "#380d00",
+                        "tertiary": "#0d0d0d",
+                        "surface": "#faf9fc",
+                        "outline-variant": "#c3c6cf",
+                        "on-primary-fixed": "#001c37",
+                        "surface-container-highest": "#e3e2e5",
+                        "primary-fixed-dim": "#acc9f1",
+                        "primary-fixed": "#d2e4ff",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#dad9dd",
+                        "primary-container": "#002444",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#ffb59b",
+                        "secondary-fixed": "#ffdbcf",
+                        "on-surface-variant": "#43474e",
+                        "inverse-on-surface": "#f1f0f3",
+                        "secondary-container": "#fe753f",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#000e20",
+                        "on-secondary-container": "#631d00",
+                        "on-error": "#ffffff",
+                        "secondary": "#a93800",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e3e2e5",
+                        "on-primary-container": "#708cb2",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-tertiary-fixed": "#1b1c1b",
+                        "surface-container-low": "#f4f3f6",
+                        "on-secondary-fixed-variant": "#812900",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9fc",
+                        "inverse-primary": "#acc9f1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "stack-tight": "4px",
+                        "container-padding": "24px",
+                        "max-width": "1440px",
+                        "gutter": "16px",
+                        "component-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-data": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-data": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "mono-label": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for dense data views */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c3c6cf; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #73777f; }
+        
+        .sparkline-bar {
+            width: 4px;
+            background-color: #446083;
+            border-radius: 1px;
+            display: inline-block;
+            margin-right: 2px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-hidden h-screen flex w-full">
+<!-- SideNavBar Component -->
+<nav class="hidden md:flex flex-col docked left-0 w-64 h-screen border-r border-outline-variant/30 bg-surface-container-low py-container-padding gap-component-gap shrink-0 z-40">
+<!-- Header -->
+<div class="px-gutter mb-6 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center font-headline-sm font-bold shadow-sm">
+                H
+            </div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary">Hermes Control</h1>
+<p class="font-mono-data text-mono-data text-on-surface-variant opacity-80">v4.2.0-Alpha</p>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-gutter mb-4">
+<button class="w-full bg-primary text-on-primary font-body-sm text-body-sm py-2 rounded-DEFAULT flex items-center justify-center gap-2 hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined" style="font-size: 16px;">add</span>
+                New Experiment
+            </button>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col flex-1 gap-1 px-2">
+<!-- Inactive -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all font-label-caps text-label-caps tracking-widest group" href="#">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 transition-opacity">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all font-label-caps text-label-caps tracking-widest group" href="#">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 transition-opacity">extension</span>
+                Skill Hub
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all font-label-caps text-label-caps tracking-widest group" href="#">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 transition-opacity">auto_awesome</span>
+                Evolution
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all font-label-caps text-label-caps tracking-widest group" href="#">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 transition-opacity">database</span>
+                Datasets
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all font-label-caps text-label-caps tracking-widest group" href="#">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 transition-opacity">monitoring</span>
+                Metrics
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all font-label-caps text-label-caps tracking-widest group" href="#">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 transition-opacity">terminal</span>
+                Live Logs
+            </a>
+<!-- ACTIVE: Curator -->
+<a class="flex items-center gap-3 px-3 py-2 text-primary border-r-4 border-secondary bg-surface-container-highest font-label-caps text-label-caps tracking-widest opacity-80 scale-95 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                Curator
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all font-label-caps text-label-caps tracking-widest group mt-auto" href="#">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 transition-opacity">settings</span>
+                Settings
+            </a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col min-w-0 bg-background relative">
+<!-- TopAppBar Component -->
+<header class="docked full-width top-0 border-b border-outline-variant/30 bg-surface flex justify-between items-center w-full px-gutter h-16 z-50 shrink-0">
+<div class="flex items-center gap-4">
+<div class="font-headline-sm text-headline-sm font-bold tracking-tighter text-primary flex items-center gap-2">
+                    Hermes <span class="text-on-surface-variant font-normal opacity-50">/</span> <span class="font-body-lg text-body-lg text-on-surface font-medium">Review Queue</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps text-label-caps bg-surface-container py-1 px-2 rounded-DEFAULT border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-surface-tint animate-pulse"></span>
+                    Syncing
+                </div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-DEFAULT">
+<span class="material-symbols-outlined">sync</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-DEFAULT relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-secondary rounded-full border border-surface"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-fixed-dim border border-outline-variant/30 flex items-center justify-center overflow-hidden ml-2">
+<span class="material-symbols-outlined text-primary text-[20px]">person</span>
+</div>
+</div>
+</header>
+<!-- Workspace Split Layout -->
+<main class="flex-1 flex flex-row overflow-hidden relative">
+<!-- Left Pane: Queue List (High Density) -->
+<aside class="w-[380px] flex flex-col border-r border-outline-variant/30 bg-surface-container-lowest shrink-0 z-10">
+<!-- Queue Tools -->
+<div class="p-4 border-b border-outline-variant/20 flex flex-col gap-3 bg-surface">
+<div class="flex items-center justify-between">
+<h2 class="font-mono-label text-mono-label text-on-surface">PENDING_REVIEWS (14)</h2>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+</button>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-[16px] text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT py-1.5 pl-8 pr-3 font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="Filter by ID or Skill..." type="text"/>
+</div>
+</div>
+<!-- Queue Items -->
+<div class="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
+<!-- Active Item -->
+<div class="p-3 bg-surface-container border border-surface-tint/30 rounded-DEFAULT cursor-pointer relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start mb-1">
+<span class="font-mono-data text-mono-data text-on-surface-variant text-[10px]">EVO-9921</span>
+<span class="font-mono-data text-mono-data text-surface-tint text-[10px] bg-primary-fixed-dim/20 px-1 rounded">NLP_CORE</span>
+</div>
+<h3 class="font-body-md text-body-md font-medium text-on-surface mb-2 leading-tight">Optimize Intent Classification Constraints</h3>
+<div class="flex items-center justify-between mt-3 pt-2 border-t border-outline-variant/20">
+<div class="flex flex-col gap-0.5">
+<span class="font-label-caps text-[9px] text-on-surface-variant">CONFIDENCE</span>
+<div class="flex items-center gap-1 font-mono-data text-mono-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-tint"></span> 94.2%
+                                </div>
+</div>
+<div class="flex flex-col gap-0.5">
+<span class="font-label-caps text-[9px] text-on-surface-variant">RISK</span>
+<div class="flex items-center gap-1 font-mono-data text-mono-data text-on-surface">
+<span class="material-symbols-outlined text-[12px] text-surface-tint">check_circle</span> Low
+                                </div>
+</div>
+<div class="flex flex-col gap-0.5 items-end">
+<span class="font-label-caps text-[9px] text-on-surface-variant">IMPACT</span>
+<div class="font-mono-data text-mono-data text-surface-tint font-medium">
+                                    +1.4% F1
+                                </div>
+</div>
+</div>
+</div>
+<!-- Inactive Item 1 -->
+<div class="p-3 bg-surface-container-lowest border border-outline-variant/10 rounded-DEFAULT cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="font-mono-data text-mono-data text-on-surface-variant text-[10px] opacity-70">EVO-9918</span>
+<span class="font-mono-data text-mono-data text-on-surface-variant text-[10px] bg-surface-variant px-1 rounded">DATA_PIPE</span>
+</div>
+<h3 class="font-body-md text-body-md text-on-surface mb-2 leading-tight opacity-90">Refactor Entity Extraction Regex Fallbacks</h3>
+<div class="flex items-center justify-between mt-3 pt-2 border-t border-outline-variant/10 opacity-80">
+<div class="flex flex-col gap-0.5">
+<span class="font-label-caps text-[9px] text-on-surface-variant">CONFIDENCE</span>
+<div class="flex items-center gap-1 font-mono-data text-mono-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> 82.1%
+                                </div>
+</div>
+<div class="flex flex-col gap-0.5">
+<span class="font-label-caps text-[9px] text-on-surface-variant">RISK</span>
+<div class="flex items-center gap-1 font-mono-data text-mono-data text-secondary-container">
+<span class="material-symbols-outlined text-[12px]">warning</span> Med
+                                </div>
+</div>
+<div class="flex flex-col gap-0.5 items-end">
+<span class="font-label-caps text-[9px] text-on-surface-variant">IMPACT</span>
+<div class="font-mono-data text-mono-data text-on-surface">
+                                    -12ms Lat.
+                                </div>
+</div>
+</div>
+</div>
+<!-- Inactive Item 2 -->
+<div class="p-3 bg-surface-container-lowest border border-outline-variant/10 rounded-DEFAULT cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="font-mono-data text-mono-data text-on-surface-variant text-[10px] opacity-70">EVO-9890</span>
+<span class="font-mono-data text-mono-data text-on-surface-variant text-[10px] bg-surface-variant px-1 rounded">SYS_PROMPT</span>
+</div>
+<h3 class="font-body-md text-body-md text-on-surface mb-2 leading-tight opacity-90">Adjust Tone Constraints for Error States</h3>
+<div class="flex items-center justify-between mt-3 pt-2 border-t border-outline-variant/10 opacity-80">
+<div class="flex flex-col gap-0.5">
+<span class="font-label-caps text-[9px] text-on-surface-variant">CONFIDENCE</span>
+<div class="flex items-center gap-1 font-mono-data text-mono-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-tint"></span> 98.9%
+                                </div>
+</div>
+<div class="flex flex-col gap-0.5">
+<span class="font-label-caps text-[9px] text-on-surface-variant">RISK</span>
+<div class="flex items-center gap-1 font-mono-data text-mono-data text-on-surface">
+<span class="material-symbols-outlined text-[12px] text-surface-tint">check_circle</span> Low
+                                </div>
+</div>
+<div class="flex flex-col gap-0.5 items-end">
+<span class="font-label-caps text-[9px] text-on-surface-variant">IMPACT</span>
+<div class="font-mono-data text-mono-data text-on-surface">
+                                    +0.2 CSAT
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Right Pane: Detail View -->
+<section class="flex-1 flex flex-col bg-surface overflow-hidden relative">
+<!-- Detail Header & Action Bar -->
+<div class="px-8 py-6 border-b border-outline-variant/20 bg-surface-bright flex justify-between items-start shrink-0">
+<div class="max-w-2xl">
+<div class="flex items-center gap-3 mb-2">
+<span class="font-mono-data text-mono-data text-on-surface bg-surface-container px-2 py-0.5 rounded border border-outline-variant/30">EVO-9921</span>
+<span class="font-label-caps text-label-caps text-surface-tint flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_fix_high</span> Auto-Generated
+                            </span>
+<span class="text-outline-variant">|</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Generated 2 hrs ago by LogicEngine-v2</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary mb-2">Optimize Intent Classification Constraints</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            The system proposes tightening the negative constraints in the core intent routing prompt to reduce false positives in out-of-domain queries. Regression testing shows significant F1 improvement without impacting latency.
+                        </p>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-3 shrink-0">
+<button class="px-4 py-2 rounded-DEFAULT border border-secondary text-secondary font-mono-label text-mono-label hover:bg-error-container/20 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">close</span> Reject
+                        </button>
+<button class="px-4 py-2 rounded-DEFAULT border border-outline-variant text-on-surface hover:bg-surface-container transition-colors font-mono-label text-mono-label flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span> Retry Test
+                        </button>
+<button class="px-6 py-2 rounded-DEFAULT bg-primary text-on-primary font-mono-label text-mono-label hover:bg-surface-tint transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">check</span> Approve Merge
+                        </button>
+</div>
+</div>
+<!-- Detail Content (Scrollable Bento) -->
+<div class="flex-1 overflow-y-auto p-8 flex flex-col gap-6 bg-background">
+<!-- Metrics Row (Stat Cards) -->
+<div class="grid grid-cols-3 gap-4">
+<!-- Stat Card 1 -->
+<div class="bg-surface border border-outline-variant/30 rounded-lg p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-1">PREDICTED F1 SCORE</span>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="font-headline-lg font-mono-data text-primary">0.942</span>
+<span class="font-mono-data text-mono-data text-surface-tint bg-primary-fixed-dim/20 px-1 rounded">+0.014</span>
+</div>
+<div class="mt-auto h-4 flex items-end gap-0.5 opacity-50">
+<div class="sparkline-bar h-1"></div><div class="sparkline-bar h-1.5"></div><div class="sparkline-bar h-2"></div>
+<div class="sparkline-bar h-2"></div><div class="sparkline-bar h-3"></div><div class="sparkline-bar h-full bg-primary opacity-100"></div>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface border border-outline-variant/30 rounded-lg p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-1">P95 LATENCY IMPACT</span>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="font-headline-lg font-mono-data text-primary">124<span class="text-body-md">ms</span></span>
+<span class="font-mono-data text-mono-data text-on-surface-variant bg-surface-container px-1 rounded">No Change</span>
+</div>
+<div class="mt-auto h-4 flex items-end gap-0.5 opacity-30">
+<div class="sparkline-bar h-2"></div><div class="sparkline-bar h-2"></div><div class="sparkline-bar h-2"></div>
+<div class="sparkline-bar h-2"></div><div class="sparkline-bar h-2"></div><div class="sparkline-bar h-2 bg-on-surface"></div>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface border border-outline-variant/30 rounded-lg p-4 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-1">TEST COVERAGE / OOD</span>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="font-headline-lg font-mono-data text-primary">99.1<span class="text-body-md">%</span></span>
+<span class="font-mono-data text-mono-data text-surface-tint bg-primary-fixed-dim/20 px-1 rounded">-4.2% Err</span>
+</div>
+<div class="mt-auto text-body-sm text-on-surface-variant">
+                                12,400 eval records passed.
+                            </div>
+</div>
+</div>
+<!-- Logic Diff View -->
+<div class="bg-surface border border-outline-variant/30 rounded-lg flex flex-col overflow-hidden">
+<div class="px-4 py-2 bg-surface-container-low border-b border-outline-variant/30 flex justify-between items-center">
+<span class="font-mono-label text-mono-label text-on-surface">src/prompts/core_intent_v2.txt</span>
+<div class="flex items-center gap-4 text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-error/50"></span> Removed</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-surface-tint/50"></span> Added</span>
+</div>
+</div>
+<!-- Dense Code Diff -->
+<div class="font-mono-data text-mono-data leading-relaxed text-on-background bg-surface-bright overflow-x-auto">
+<div class="flex px-4 py-1 hover:bg-surface-container-lowest text-outline">
+<div class="w-8 select-none text-right pr-4 border-r border-outline-variant/30">42</div>
+<div class="pl-4 whitespace-pre">You are an expert system. Classify the user intent.</div>
+</div>
+<div class="flex px-4 py-1 hover:bg-surface-container-lowest text-outline">
+<div class="w-8 select-none text-right pr-4 border-r border-outline-variant/30">43</div>
+<div class="pl-4 whitespace-pre">Rules:</div>
+</div>
+<!-- Removed Line -->
+<div class="flex px-4 py-1 bg-error-container/20 text-error">
+<div class="w-8 select-none text-right pr-4 border-r border-error/30 opacity-70">44</div>
+<div class="pl-4 whitespace-pre">- If the query is unrelated to Hermes capabilities, reply "OOD".</div>
+</div>
+<!-- Added Lines -->
+<div class="flex px-4 py-1 bg-primary-fixed-dim/10 text-on-primary-fixed">
+<div class="w-8 select-none text-right pr-4 border-r border-primary-fixed-dim/50 opacity-70">44</div>
+<div class="pl-4 whitespace-pre">+ If the query explicitly asks about topics outside the defined skill matrix</div>
+</div>
+<div class="flex px-4 py-1 bg-primary-fixed-dim/10 text-on-primary-fixed">
+<div class="w-8 select-none text-right pr-4 border-r border-primary-fixed-dim/50 opacity-70">45</div>
+<div class="pl-4 whitespace-pre">+ (e.g., weather, generic trivia, medical advice), you MUST classify as "OOD".</div>
+</div>
+<div class="flex px-4 py-1 hover:bg-surface-container-lowest text-outline">
+<div class="w-8 select-none text-right pr-4 border-r border-outline-variant/30">46</div>
+<div class="pl-4 whitespace-pre">- Only extract entities that match the schema perfectly.</div>
+</div>
+</div>
+</div>
+<!-- Execution Context / Details -->
+<div class="bg-surface border border-outline-variant/30 rounded-lg p-5">
+<h3 class="font-mono-label text-mono-label text-on-surface mb-4 border-b border-outline-variant/20 pb-2">EVALUATION_TRACE</h3>
+<div class="grid grid-cols-2 gap-x-8 gap-y-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-on-surface-variant">TEST DATASET</span>
+<span class="font-body-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-surface-tint">database</span> 
+                                    golden_intent_set_v4.json (12k rows)
+                                </span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-on-surface-variant">TARGET MODEL</span>
+<span class="font-body-sm text-on-surface font-mono-data">hermes-claude-3-haiku-finetune</span>
+</div>
+<div class="flex flex-col gap-1 col-span-2 mt-2">
+<span class="font-label-caps text-on-surface-variant mb-1">NOTABLE REGRESSIONS</span>
+<div class="bg-surface-container-low border border-outline-variant/20 rounded p-3 text-body-sm text-on-surface-variant">
+                                    None detected. False positive rate for OOD queries dropped from 4.1% to 0.8%. Minor shift in confidence scores for edge-case technical queries (-0.02 delta), well within acceptable bounds.
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

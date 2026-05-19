@@ -1,0 +1,1 @@
+This document preserves the backend/requirements.txt file from the hermes-dashboard project, containing Python dependencies: fastapi>=0.115.0, uvicorn[standard]>=0.34.0, websockets>=13.0, and pyyaml>=6.0.

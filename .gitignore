@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Build & cache
+*.tsbuildinfo
+turbopack-cache/
+.turbo/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+
+# Misc
+.cache/
+tmp/
+.turbopack/

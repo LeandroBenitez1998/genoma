@@ -1,0 +1,1 @@
+A TypeScript API client library providing typed functions for jobs, skills, evolution, and WebSocket management with Hermes session-based auth, AbortController timeouts, categorized errors, and automatic token refresh on 401 responses.

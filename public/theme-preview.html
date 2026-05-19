@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genoma — Light Theme Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            base: '#F4F7FA',
+            surface: '#FFFFFF',
+            'surface-hover': '#F0F4F8',
+            primary: {
+              50: '#ECFEFF', 100: '#CFFAFE', 200: '#A5F3FC',
+              300: '#67E8F9', 400: '#22D3EE', 500: '#06B6D4',
+              600: '#0891B2', 700: '#0E7490', 800: '#155E75', 900: '#164E63',
+            },
+            semantic: {
+              success: '#2DD4BF', warning: '#FBBF24',
+              error: '#E11D48', info: '#0EA5E9',
+            },
+            txt: {
+              primary: '#0F172A', secondary: '#475569',
+              tertiary: '#94A3B8', inverse: '#F8FAFC',
+            }
+          },
+          boxShadow: {
+            'evo-sm': '0 1px 2px 0 rgba(15, 23, 42, 0.05)',
+            'evo-md': '0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04)',
+            'evo-lg': '0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04)',
+            'evo-glow': '0 0 0 3px rgba(6, 182, 212, 0.15)',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-base min-h-screen">
+  <!-- Sidebar -->
+  <div class="fixed left-0 top-0 h-full w-16 bg-surface border-r border-gray-200 flex flex-col items-center py-6 gap-4 z-50">
+    <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center text-white font-bold text-lg">G</div>
+    <div class="w-8 h-8 rounded-lg bg-primary-50 text-primary-700 flex items-center justify-center text-sm">🏠</div>
+    <div class="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center text-sm shadow-evo-md">⚡</div>
+    <div class="w-8 h-8 rounded-lg hover:bg-surface-hover text-txt-secondary flex items-center justify-center text-sm transition-colors">📊</div>
+    <div class="w-8 h-8 rounded-lg hover:bg-surface-hover text-txt-secondary flex items-center justify-center text-sm transition-colors">🧠</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="ml-16 p-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+          <span class="text-xl">⚡</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-txt-primary">Skill Hub</h1>
+          <p class="text-sm text-txt-secondary">Tus skills locales, organizadas por proveedor y categoría</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors shadow-evo-md">
+          🎨 Aplicar Tema
+        </button>
+        <button class="px-4 py-2 bg-surface border border-gray-200 text-txt-secondary rounded-lg text-sm hover:bg-surface-hover transition-colors">
+          🔄 Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Search + Filters -->
+    <div class="flex gap-4 mb-6">
+      <div class="relative flex-1">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-txt-tertiary">🔍</span>
+        <input type="text" placeholder="Buscar skills por nombre, descripción o categoría..."
+          class="w-full pl-10 pr-4 py-3 bg-surface border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 text-txt-primary shadow-evo-sm"
+        />
+      </div>
+      <select class="px-4 py-3 bg-surface border border-gray-200 rounded-xl text-txt-secondary focus:outline-none focus:ring-2 focus:ring-primary-500/30 shadow-evo-sm">
+        <option>Todos los providers</option>
+        <option>Agency</option>
+        <option>Hermes</option>
+      </select>
+      <select class="px-4 py-3 bg-surface border border-gray-200 rounded-xl text-txt-secondary focus:outline-none focus:ring-2 focus:ring-primary-500/30 shadow-evo-sm">
+        <option>Todas las categorías</option>
+        <option>software-development</option>
+        <option>devops</option>
+      </select>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-4 gap-4 mb-8">
+      <div class="bg-surface rounded-2xl border border-gray-100 p-5 shadow-evo-md hover:shadow-evo-lg transition-shadow">
+        <div class="text-2xl mb-2">🏢</div>
+        <div class="text-sm font-medium text-txt-secondary capitalize">Agency</div>
+        <div class="text-3xl font-bold text-primary-700 mt-1">1173/1185</div>
+        <div class="text-xs text-txt-tertiary mt-1">habilitadas</div>
+      </div>
+      <div class="bg-surface rounded-2xl border border-gray-100 p-5 shadow-evo-md hover:shadow-evo-lg transition-shadow">
+        <div class="text-2xl mb-2">🪽</div>
+        <div class="text-sm font-medium text-txt-secondary capitalize">Hermes</div>
+        <div class="text-3xl font-bold text-primary-700 mt-1">127/127</div>
+        <div class="text-xs text-txt-tertiary mt-1">habilitadas</div>
+      </div>
+      <div class="bg-surface rounded-2xl border border-gray-100 p-5 shadow-evo-md hover:shadow-evo-lg transition-shadow">
+        <div class="text-2xl mb-2">🤖</div>
+        <div class="text-sm font-medium text-txt-secondary capitalize">Claude-Code</div>
+        <div class="text-3xl font-bold text-primary-700 mt-1">99/99</div>
+        <div class="text-xs text-txt-tertiary mt-1">habilitadas</div>
+      </div>
+      <div class="bg-surface rounded-2xl border border-gray-100 p-5 shadow-evo-md hover:shadow-evo-lg transition-shadow">
+        <div class="text-2xl mb-2">⚡</div>
+        <div class="text-sm font-medium text-txt-secondary capitalize">Kilocode</div>
+        <div class="text-3xl font-bold text-primary-700 mt-1">27/27</div>
+        <div class="text-xs text-txt-tertiary mt-1">habilitadas</div>
+      </div>
+    </div>
+
+    <!-- Provider: Hermes (Expanded) -->
+    <div class="bg-surface rounded-2xl border border-gray-100 shadow-evo-md overflow-hidden mb-6">
+      <div class="flex items-center justify-between p-5 cursor-pointer hover:bg-surface-hover transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🪽</span>
+          <div>
+            <h2 class="text-lg font-bold text-txt-primary capitalize">Hermes</h2>
+            <p class="text-xs text-txt-tertiary">25 categorías</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-txt-secondary">127/127 activas</span>
+          <span class="text-txt-tertiary">▼</span>
+        </div>
+      </div>
+
+      <div class="px-5 pb-5 space-y-3">
+        <!-- Category: software-development -->
+        <div class="border border-gray-100 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between p-3 hover:bg-base transition-colors cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">📁</span>
+              <span class="text-sm font-semibold text-primary-700 bg-primary-50 px-2 py-0.5 rounded-lg border border-primary-200">
+                software-development
+              </span>
+              <span class="text-xs text-txt-tertiary">32 skills</span>
+            </div>
+            <span class="text-txt-tertiary text-sm">▼</span>
+          </div>
+          <div class="p-3 pt-0 grid grid-cols-3 gap-2">
+            <div class="p-3 bg-base rounded-lg border border-gray-100 hover:border-primary-300 hover:shadow-evo-sm transition-all">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="font-medium text-txt-primary text-sm">python-cli-to-dashboard</h3>
+                  <p class="text-xs text-txt-secondary mt-1">Wrap Python CLI in FastAPI</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-semantic-success/10 text-semantic-success flex items-center justify-center text-xs">✓</div>
+              </div>
+            </div>
+            <div class="p-3 bg-base rounded-lg border border-gray-100 hover:border-primary-300 hover:shadow-evo-sm transition-all">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="font-medium text-txt-primary text-sm">tauri-linux-compat</h3>
+                  <p class="text-xs text-txt-secondary mt-1">Port Tauri to Linux</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-semantic-success/10 text-semantic-success flex items-center justify-center text-xs">✓</div>
+              </div>
+            </div>
+            <div class="p-3 bg-base rounded-lg border border-gray-100 hover:border-primary-300 hover:shadow-evo-sm transition-all">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="font-medium text-txt-primary text-sm">test-driven-dev</h3>
+                  <p class="text-xs text-txt-secondary mt-1">TDD workflow</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-semantic-success/10 text-semantic-success flex items-center justify-center text-xs">✓</div>
+              </div>
+            </div>
+          </div>
+          <button class="w-full py-2 text-sm text-primary-600 hover:text-primary-700 hover:bg-primary-50 transition-colors border-t border-dashed border-gray-200">
+            Mostrar más (29 restantes)
+          </button>
+        </div>
+
+        <!-- Category: devops -->
+        <div class="border border-gray-100 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between p-3 hover:bg-base transition-colors cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">📁</span>
+              <span class="text-sm font-semibold text-semantic-info bg-sky-50 px-2 py-0.5 rounded-lg border border-sky-200">
+                devops
+              </span>
+              <span class="text-xs text-txt-tertiary">16 skills</span>
+            </div>
+            <span class="text-txt-tertiary text-sm">▼</span>
+          </div>
+        </div>
+
+        <!-- Category: github -->
+        <div class="border border-gray-100 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between p-3 hover:bg-base transition-colors cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">📁</span>
+              <span class="text-sm font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200">
+                github
+              </span>
+              <span class="text-xs text-txt-tertiary">6 skills</span>
+            </div>
+            <span class="text-txt-tertiary text-sm">▼</span>
+          </div>
+        </div>
+
+        <!-- Category: creative -->
+        <div class="border border-gray-100 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between p-3 hover:bg-base transition-colors cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400">📁</span>
+              <span class="text-sm font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-200">
+                creative
+              </span>
+              <span class="text-xs text-txt-tertiary">13 skills</span>
+            </div>
+            <span class="text-txt-tertiary text-sm">▼</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Provider: Claude-Code (Collapsed) -->
+    <div class="bg-surface rounded-2xl border border-gray-100 shadow-evo-sm overflow-hidden mb-6">
+      <div class="flex items-center justify-between p-5 cursor-pointer hover:bg-surface-hover transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🤖</span>
+          <div>
+            <h2 class="text-lg font-bold text-txt-primary capitalize">Claude-Code</h2>
+            <p class="text-xs text-txt-tertiary">1 categoría</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-txt-secondary">99/99 activas</span>
+          <span class="text-txt-tertiary">▶</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Theme Toggle -->
+  <div class="fixed bottom-6 right-6 flex gap-2">
+    <div class="bg-surface border border-gray-200 rounded-xl p-1 shadow-evo-lg flex gap-1">
+      <button class="px-3 py-1.5 rounded-lg bg-primary-600 text-white text-sm font-medium">☀️ Light</button>
+      <button class="px-3 py-1.5 rounded-lg hover:bg-gray-100 text-txt-secondary text-sm transition-colors">🌙 Dark</button>
+    </div>
+  </div>
+</body>
+</html>
