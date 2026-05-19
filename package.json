@@ -1,13 +1,18 @@
 {
-  "name": "hermes-dashboard",
-  "version": "0.1.1",
-  "private": true,
+  "name": "genoma",
+  "version": "1.0.0",
+  "private": false,
+  "bin": {
+    "genoma": "./bin/genoma.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
+  "postinstall": "node scripts/postinstall.js",
+  "prepublishOnly": "pnpm build",
   "dependencies": {
     "@chenglou/pretext": "^0.0.6",
     "@tanstack/react-query": "^5.99.2",
