@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-from pathlib import Path
 
 from backend.mcp_server import server, handle_tool_call
 from backend.storage.run_store import RunStore
