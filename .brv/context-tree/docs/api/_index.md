@@ -1,54 +1,53 @@
 ---
-children_hash: 50c773b90f6937381a937265ca7c7ce8090632fd257e370e2bd838288f3232dd
-compression_ratio: 0.12634643377001456
+children_hash: 421c2efc31c5d9931665064358ef0f649a63c7531951255331ff493d99503ed0
+compression_ratio: 0.17920519870032492
 condensation_order: 1
 covers: [context.md, hermes_api_openapi_specification.md]
-covers_token_total: 3435
+covers_token_total: 4001
 summary_level: d1
-token_count: 434
+token_count: 717
 type: summary
 ---
-# docs/api — API Specification Domain
+# docs/api — Hermes Agent API Contract
 
-## Overview
-OpenAPI 3.0 specification documenting the Hermes backend API contract. Next.js frontend consumes these endpoints; FastAPI/Python backend exposes them at `http://127.0.0.1:8000` (overridable via `NEXT_PUBLIC_API_BASE`).
+## Scope
+The `docs/api` topic documents the Hermes agent self-evolution backend contract, centered on the OpenAPI specification and its frontend/backend integration rules. It covers skills management, evolution runs, job control, health checks, typed errors, and the standardized disconnected-state behavior used by the dashboard.
 
-## Endpoint Groups
+## Key entry: `hermes_api_openapi_specification.md`
+- Canonical Hermes API specification for the dashboard and agent gateway.
+- OpenAPI 3.1 document describing:
+  - `GET /api/skills`
+  - `GET /api/skills/{name}`
+  - `GET /api/skills/{name}/evolution-history`
+  - `GET /api/evolution/runs`
+  - `POST /api/evolution/start`
+  - `GET /api/jobs`
+  - `GET /api/jobs/{jobId}`
+  - `DELETE /api/jobs/{jobId}`
+  - `GET /api/jobs/{jobId}/logs`
+  - `GET /api/health`
+- Defines reusable schemas for `SkillInfo`, `SkillDetail`, `EvolutionRun`, `EvolutionJob`, `ApiError`, and `HealthStatus`.
+- Standardizes `503 ServiceUnavailable` responses so the frontend can map backend unavailability to a “Desconectado” state with retry behavior.
+- Explicitly ties frontend behavior to `NEXT_PUBLIC_API_BASE` override and to `ApiError` mapping for all non-2xx or network failures.
 
-### Skills
-- `GET /api/skills` — List all installed skills
-- `GET /api/skills/{name}` — Get skill detail (frontmatter + body)
-- `GET /api/skills/{name}/evolution-history` — Get evolution history for skill
+## Architectural relationships
+- The frontend Next.js dashboard consumes this API contract directly.
+- The Hermes CLI gateway exposes the contract over the FastAPI backend.
+- `/api/health` acts as the backend health source of truth, while `HealthStatus` provides a disconnected fallback model with `lastSeen`.
+- Evolution lifecycle is represented across runs, jobs, job logs, and skill evolution history, creating a connected flow from skill selection to execution and monitoring.
 
-### Evolution
-- `GET /api/evolution/runs` — List all evolution runs
-- `POST /api/evolution/start` — Start evolution job (`skill_name`, `iterations` 1-20, `eval_source`)
+## Structural patterns
+- Skill endpoints are grouped separately from evolution endpoints, job endpoints, and health.
+- The API prefers typed JSON responses and reusable component schemas.
+- Job logs are paginated/streamed via `since`, and job status is modeled as a finite lifecycle:
+  `queued -> loading_skill -> building_dataset -> validating -> configuring -> optimizing -> evaluating -> saving -> completed/failed`
 
-### Jobs
-- `GET /api/jobs` — List jobs (optional `active_only` filter)
-- `GET /api/jobs/{jobId}` — Get job detail
-- `DELETE /api/jobs/{jobId}` — Cancel active job
-- `GET /api/jobs/{jobId}/logs` — Get paginated logs (`since` param)
+## Supporting entry: `context.md`
+- Older broad topic overview for `api`.
+- Summarizes the same general scope at a higher level: job management, skills registry, evolution endpoints, WebSocket streaming, and configuration management.
+- Should be treated as the broader topic summary and cross-referenced to the newer OpenAPI specification.
 
-### Health
-- `GET /api/health` — Returns `status`, `hermes_repo_exists`, `evolution_dir_exists`, `skills_count`, `categories`
-
-### WebSocket
-- `/ws` — Real-time job progress streaming
-
-## Key Schemas
-
-**EvolutionJob status flow:** `queued → loading_skill → building_dataset → validating → configuring → optimizing → evaluating → saving → completed/failed`
-
-**ApiError** — Typed error contract with `kind` enum:
-- `network` — Service unreachable
-- `timeout` — Request timeout exceeded
-- `server` — HTTP 5xx
-- `client` — HTTP 4xx
-
-**EvolutionRun** — Records `baseline_score`, `evolved_score`, `improvement`, `constraints_passed` per run
-
-## Related Entries
-- See `hermes_api_openapi_specification.md` for full OpenAPI YAML
-- Backend implementation: `backend/main.py`, `backend/job_tracker.py`
-- Frontend client: `frontend/src/lib/api.ts`
+## Related consolidation note
+- `hermes_api_specification.md` was consolidated into `hermes_api_openapi_specification.md` because both described the same Hermes API contract.
+- The richer OpenAPI 3.1 file is the preferred source for endpoint details, schema definitions, and error-handling rules.
+- The abstract/overview companion files remain as supporting metadata for the merged specification.

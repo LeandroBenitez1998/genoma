@@ -1,0 +1,1 @@
+The collectors package provides interfaces for ingesting Claude Code and Hermes sessions into curated backend knowledge.

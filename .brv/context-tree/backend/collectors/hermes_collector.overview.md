@@ -1,0 +1,7 @@
+- Wraps `TraceIngestor`-backed trace data and converts `TraceRecord` objects into `CanonicalRun` instances.
+- `collect_from_trace` delegates directly to `trace.to_canonical()`, making canonical conversion the core behavior.
+- `collect_batch` maps a list of traces into a list of canonical runs.
+- `load_from_disk` reads JSON trace files from `INGESTED_DIR`, sorts them in reverse order, applies a limit, and skips malformed records.
+- `get_run_by_id` searches disk files matching the run ID, loads each JSON trace, and returns the matching canonical run if found.
+- The collector is intentionally thin and relies on existing trace model behavior rather than re-implementing normalization.
+- Notable entities: `HermesCollector`, `TraceRecord`, `CanonicalRun`, `TraceIngestor`, `INGESTED_DIR`, version `0.1.0`, agent name `hermes`.

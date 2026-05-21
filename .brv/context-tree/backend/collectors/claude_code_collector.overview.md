@@ -1,0 +1,7 @@
+- Converts Claude Code session JSONL logs into the CanonicalRun schema.
+- Primary entrypoint is `collect_session`, which loads events, extracts session metadata, and assembles a `CanonicalRun`.
+- `collect_all` scans `.claude/projects` or a provided project path, recursively finds `.jsonl` files, applies a limit, and skips malformed sessions.
+- Extraction helpers parse session ID, task text, timestamps, model, repo/branch, cwd, tool calls, metrics, errors, and inferred outcome.
+- Tool usage is captured from assistant `tool_use` items; file touches are currently a stub/simplified MVP.
+- Error handling is permissive: JSON decode failures, file read errors, and per-session exceptions are ignored to keep collection robust.
+- Notable entities: `ClaudeCodeCollector`, `CanonicalRun`, `ToolCallRecord`, `FileTouchRecord`, `RunMetrics`, `CLAUDE_SESSIONS_DIR`, provider set to `anthropic`, collector version `0.1.0`.

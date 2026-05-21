@@ -1,0 +1,7 @@
+- The frontend is a Next.js app using the app router with shared layout and page components.
+- Documented pages include overview (`src/app/page.tsx`), layout (`src/app/layout.tsx`), evolution (`src/app/evolution/page.tsx`), and skills (`src/app/skills/page.tsx`).
+- The dashboard exposes multiple views such as curator, skill studio, logs, metrics, settings, and evolution.
+- Shared infrastructure includes reusable components, UI primitives, a query provider, and themed background styling.
+- The stated flow is route -> layout -> page components -> UI primitives.
+- The design suggests a modular dashboard built around route-based pages and common presentation scaffolding.
+- Notable entities/patterns: app router structure, query provider integration, themed backgrounds, and dashboard-oriented feature pages.

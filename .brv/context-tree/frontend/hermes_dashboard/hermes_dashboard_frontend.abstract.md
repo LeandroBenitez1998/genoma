@@ -1,0 +1,1 @@
+The Hermes dashboard frontend is a Next.js app-router interface with shared layout and pages for overview, evolution, skills, curator, datasets, logs, metrics, and settings.

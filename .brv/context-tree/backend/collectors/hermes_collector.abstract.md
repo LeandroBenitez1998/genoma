@@ -1,0 +1,1 @@
+The Hermes collector converts ingested TraceRecord data into CanonicalRun objects and provides batch, disk-loading, and ID lookup utilities.

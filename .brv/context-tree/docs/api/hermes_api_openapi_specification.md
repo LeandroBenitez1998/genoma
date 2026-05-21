@@ -1,43 +1,76 @@
 ---
 title: Hermes API OpenAPI Specification
-summary: Complete OpenAPI 3.0 specification defining all Hermes backend endpoints including job management, skills, evolution, and WebSocket streaming
+summary: OpenAPI 3.1 spec for Hermes Agent API covering skills, evolution runs, jobs, health checks, typed errors, and standardized 503 responses.
 tags: []
 related: []
 keywords: []
 createdAt: '2026-04-28T03:39:56.018Z'
-updatedAt: '2026-04-28T03:46:41.133Z'
+updatedAt: '2026-05-21T07:40:39.537Z'
+consolidated_at: '2026-05-21T07:43:21.960Z'
+consolidated_from: [{date: '2026-05-21T07:43:21.960Z', path: docs/api/hermes_api_specification.md, reason: 'These two files document the same Hermes API contract and overlap heavily in scope, files, and flow. The OpenAPI specification file is richer and should be the merge target, absorbing the shorter canonical-spec note while preserving the detailed endpoint, schema, and error-handling information.'}]
 ---
 ## Reason
-Preserving complete OpenAPI 3.0 spec for Hermes backend API
+Document the Hermes backend API contract for the dashboard and agent gateway.
 
 ## Raw Concept
 **Task:**
-Document Hermes backend API specification
+Document the Hermes Agent API OpenAPI specification for backend/frontend integration.
+
+**Changes:**
+- Defined endpoints for skills, evolution runs, jobs, and health checks
+- Added typed schemas for skills, evolution jobs, runs, and API errors
+- Standardized 503 service-unavailable responses for frontend handling
+- Established the API specification as the canonical Hermes contract used by dashboard and backend integrations
 
 **Files:**
 - docs/api/hermes-api.openapi.yaml
 
-**Timestamp:** 2026-04-28
+**Flow:**
+Frontend requests API -> backend returns typed JSON -> frontend maps ApiError and health state -> dashboard updates UI
+
+**Timestamp:** 2026-05-21T07:40:20.707Z
+
+**Patterns:**
+- `^/api/skills$` - List installed skills endpoint
+- `^/api/skills/[^/]+$` - Skill detail endpoint by name
+- `^/api/skills/[^/]+/evolution-history$` - Per-skill evolution history endpoint
+- `^/api/evolution/runs$` - List evolution runs endpoint
+- `^/api/evolution/start$` - Start evolution endpoint
+- `^/api/jobs$` - List jobs endpoint
+- `^/api/jobs/[^/]+$` - Job detail/cancel endpoint
+- `^/api/jobs/[^/]+/logs$` - Job logs endpoint
+- `^/api/health$` - Backend health check endpoint
 
 ## Narrative
 ### Structure
-OpenAPI 3.0 specification with paths for /jobs, /skills, /evolve, /config, and WebSocket /ws endpoint
+OpenAPI 3.1 document with top-level metadata, server definition, path operations for skills/evolution/jobs/health, and reusable component schemas and responses.
+
+### Dependencies
+Consumed by the Next.js frontend and exposed by the hermes-cli gateway over the FastAPI backend. The spec references typed schemas for SkillInfo, SkillDetail, EvolutionRun, EvolutionJob, ApiError, and HealthStatus.
+
+### Highlights
+The spec documents the full dashboard contract, including evolution lifecycle operations, paginated job logs, and a standardized disconnected state through the ServiceUnavailable response.
+
+### Rules
+El frontend Next.js consume estos endpoints y espera este contrato de respuesta.
+NEXT_PUBLIC_API_BASE sobreescribe esta URL.
+Cualquier respuesta != 2xx o error de red se mapea a ApiError.
+El frontend debe interpretar 503 como señal para mostrar estado "Desconectado" con opción de reintento.
 
 ---
 
-
-openapi: &quot;3.1.0&quot;
+openapi: "3.1.0"
 info:
   title: Hermes Agent API
   description: |
     API del backend de Hermes (FastAPI/Python) expuesta por el gateway de hermes-cli.
     El frontend Next.js consume estos endpoints y espera este contrato de respuesta.
-  version: &quot;1.0.0&quot;
+  version: "1.0.0"
   contact:
     name: Hermes Dashboard
 
 servers:
-  - url: &quot;http://127.0.0.1:8000&quot;
+  - url: "http://127.0.0.1:8000"
     description: Backend local (default). NEXT_PUBLIC_API_BASE sobreescribe esta URL.
 
 paths:
@@ -48,16 +81,16 @@ paths:
       summary: Listar todos los skills instalados
       description: Retorna la lista completa de skills detectados en los directorios configurados.
       responses:
-        &quot;200&quot;:
+        "200":
           description: Lista de skills
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: &quot;#/components/schemas/SkillInfo&quot;
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+                  $ref: "#/components/schemas/SkillInfo"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/skills/{name}:
     get:
@@ -71,14 +104,14 @@ paths:
           schema:
             type: string
       responses:
-        &quot;200&quot;:
+        "200":
           description: Detalle del skill
           content:
             application/json:
               schema:
-                $ref: &quot;#/components/schemas/SkillDetail&quot;
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+                $ref: "#/components/schemas/SkillDetail"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/skills/{name}/evolution-history:
     get:
@@ -91,16 +124,16 @@ paths:
           schema:
             type: string
       responses:
-        &quot;200&quot;:
+        "200":
           description: Lista de ejecuciones de evolución para este skill
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: &quot;#/components/schemas/EvolutionRun&quot;
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+                  $ref: "#/components/schemas/EvolutionRun"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   ## ── Evolution ───────────────────────────────────────────────────────
   /api/evolution/runs:
@@ -109,16 +142,16 @@ paths:
       summary: Listar todas las ejecuciones de evolución
       description: Retorna el historial completo de ejecuciones de evolución.
       responses:
-        &quot;200&quot;:
+        "200":
           description: Lista de runs de evolución
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: &quot;#/components/schemas/EvolutionRun&quot;
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+                  $ref: "#/components/schemas/EvolutionRun"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/evolution/start:
     post:
@@ -144,7 +177,7 @@ paths:
                   type: string
                   default: synthetic
       responses:
-        &quot;200&quot;:
+        "200":
           description: Job de evolución creado
           content:
             application/json:
@@ -159,8 +192,8 @@ paths:
                     type: string
                   error:
                     type: string
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   ## ── Jobs ───────────────────────────────────────────────────────────
   /api/jobs:
@@ -174,16 +207,16 @@ paths:
             type: boolean
             default: false
       responses:
-        &quot;200&quot;:
+        "200":
           description: Lista de jobs
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: &quot;#/components/schemas/EvolutionJob&quot;
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+                  $ref: "#/components/schemas/EvolutionJob"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/jobs/{jobId}:
     get:
@@ -196,14 +229,14 @@ paths:
           schema:
             type: string
       responses:
-        &quot;200&quot;:
+        "200":
           description: Detalle del job
           content:
             application/json:
               schema:
-                $ref: &quot;#/components/schemas/EvolutionJob&quot;
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+                $ref: "#/components/schemas/EvolutionJob"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
     delete:
       operationId: cancelJob
       summary: Cancelar un job activo
@@ -214,10 +247,10 @@ paths:
           schema:
             type: string
       responses:
-        &quot;200&quot;:
+        "200":
           description: Job cancelado
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/jobs/{jobId}/logs:
     get:
@@ -235,7 +268,7 @@ paths:
             type: integer
             default: 0
       responses:
-        &quot;200&quot;:
+        "200":
           description: Logs del job (streaming paginado)
           content:
             application/json:
@@ -254,8 +287,8 @@ paths:
                     type: string
                   progress:
                     type: number
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   ## ── Health ─────────────────────────────────────────────────────────
   /api/health:
@@ -263,7 +296,7 @@ paths:
       operationId: healthCheck
       summary: Health check del backend
       responses:
-        &quot;200&quot;:
+        "200":
           description: Estado del sistema
           content:
             application/json:
@@ -287,8 +320,8 @@ paths:
                     type: object
                     additionalProperties:
                       type: integer
-        &quot;503&quot;:
-          $ref: &quot;#/components/responses/ServiceUnavailable&quot;
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
 ## ── Componentes ─────────────────────────────────────────────────────
 components:
@@ -453,16 +486,17 @@ components:
   ## ── Respuesta 503 estandarizada ───────────────────────────────────
   responses:
     ServiceUnavailable:
-      description: &gt;
+      description: >
         El backend no está alcanzable. El frontend debe interpretar esto como señal
-        para mostrar estado &quot;Desconectado&quot; con opción de reintento.
+        para mostrar estado "Desconectado" con opción de reintento.
       content:
         application/json:
           schema:
-            $ref: &quot;#/components/schemas/ApiError&quot;
+            $ref: "#/components/schemas/ApiError"
           example:
             kind: network
-            message: &quot;El servicio de Hermes no está disponible&quot;
-            endpoint: &quot;/api/skills&quot;
+            message: "El servicio de Hermes no está disponible"
+            endpoint: "/api/skills"
 
-    
+## Cross-reference
+Add a reference from `docs/api/context.md` to the merged OpenAPI specification, because the topic overview is currently broader and slightly outdated relative to the newer OpenAPI 3.1 file. The abstract/overview companion files for `docs/api/hermes_api_openapi_specification.*` and `docs/api/hermes_api_specification.*` are complementary and can remain as supporting metadata after the merge.

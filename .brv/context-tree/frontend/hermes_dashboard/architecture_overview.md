@@ -2,7 +2,7 @@
 title: Architecture Overview
 summary: Next.js 16 + FastAPI dashboard with Three.js replaced by CSS gradients, lazy-loaded backend, standalone next.config
 tags: []
-related: []
+related: [frontend/hermes_dashboard/hermes_dashboard_frontend.md, frontend/hermes_dashboard/layout.md, frontend/hermes_dashboard/page.md, frontend/hermes_dashboard/globals.md, frontend/hermes_dashboard/route.md]
 keywords: []
 createdAt: '2026-04-28T02:21:54.807Z'
 updatedAt: '2026-04-28T02:21:54.807Z'

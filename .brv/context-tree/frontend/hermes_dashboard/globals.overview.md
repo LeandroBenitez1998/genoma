@@ -1,0 +1,7 @@
+- Defines the global CSS foundation for the Genoma dashboard using Tailwind, `tw-animate-css`, and `shadcn/tailwind.css`.
+- Establishes a comprehensive design system with Genoma brand tokens for primary, secondary, background, surface, semantic colors, shadows, and chart palette values.
+- Provides light and dark theme variable sets, including shadcn-compatible CSS variables and sidebar-specific color tokens.
+- Uses Tailwind v4 `@theme inline` to map CSS variables into theme colors, font families, and radius scales.
+- Adds base styling for body font smoothing, custom scrollbars, view-transition behavior, and global utility classes such as `glass-card`, `gradient-text`, `led-pulse`, `cursor-blink`, `editorial-shadow`, `glass-header`, `genoma-cta`, `genoma-cta-secondary`, `genoma-input`, and `stat-number`.
+- Notable design decisions include a “no-line rule” for glass cards, gradient text animations, and a distinct deep navy + warm accent visual identity in both light and dark modes.
+- The file ends with base layer rules that apply border/ring defaults globally and set body/html defaults for background, text color, and font family.

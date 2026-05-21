@@ -1,0 +1,8 @@
+- Client-side Next.js page for an “Evolution Hub” that curates and evolves skills from the backend API.
+- Main responsibilities: load evolvable skills and prior evolution runs, start evolution jobs, poll job status, and fetch before/after diffs.
+- Uses provider metadata to render branded provider tabs and skill cards for Hermes, Claude Code, OpenCode, Kilocode, and Antigravity.
+- Includes reusable UI pieces: ProviderTabs, DeltaBadge, JobStatusBadge, SkillCard, StatsBar, and a modal DiffViewer.
+- Skill cards show name, shortened description, category, provider badge, last-run improvement, and an evolve/re-evolve action.
+- DiffViewer presents metrics plus side-by-side baseline vs evolved code/text, capped to 5000 chars each.
+- Filtering supports provider selection and search across skill name, description, and category.
+- Notable state/decisions: active jobs are polled every 2s; evolution starts with a fixed iteration count of 3; diff fetching currently uses `latest` rather than the discovered run directory.

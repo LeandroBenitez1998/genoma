@@ -10,8 +10,9 @@ import sys
 from pathlib import Path
 from openai import OpenAI
 
-OLLAMA_BASE = "http://localhost:11434/v1"
-OLLAMA_MODEL = "gemma4:31b-cloud"
+import os
+OLLAMA_BASE = os.getenv("OLLAMA_API_BASE", "http://localhost:11434/v1")
+OLLAMA_MODEL = os.getenv("SDD_OLLAMA_MODEL", os.getenv("SDD_EVOLVE_MODEL", "gemma4:31b-cloud"))
 
 client = OpenAI(base_url=OLLAMA_BASE, api_key="ollama")
 

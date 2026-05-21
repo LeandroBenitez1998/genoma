@@ -1,0 +1,1 @@
+The Hermes OpenAPI specification defines the API contract that guides dashboard and backend integration request and response shapes.

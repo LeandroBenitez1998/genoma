@@ -1,0 +1,1 @@
+The Claude Code collector parses session JSONL logs into CanonicalRun records, extracting IDs, tasks, timestamps, tools, metrics, errors, and inferred outcomes.

@@ -1,0 +1,1 @@
+This reusable ClickSpark wrapper renders animated spark particles on click around its children using a canvas and requestAnimationFrame.

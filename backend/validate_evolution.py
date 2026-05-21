@@ -20,9 +20,10 @@ from pathlib import Path
 from typing import Optional
 from openai import OpenAI
 
-# ── Config ──────────────────────────────────────────────────────────
-OLLAMA_BASE = "http://localhost:11434/v1"
-OLLAMA_MODEL = "gemma4:31b-cloud"
+# ── Config (from env / defaults) ────────────────────────────────────
+import os
+OLLAMA_BASE = os.getenv("OLLAMA_API_BASE", "http://localhost:11434/v1")
+OLLAMA_MODEL = os.getenv("SDD_OLLAMA_MODEL", os.getenv("SDD_EVOLVE_MODEL", "gemma4:31b-cloud"))
 EVOLUTION_DIR = Path.home() / ".hermes" / "hermes-agent-self-evolution" / "output"
 DATASETS_DIR = Path.home() / ".hermes" / "datasets"
 

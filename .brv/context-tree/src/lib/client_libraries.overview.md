@@ -1,0 +1,7 @@
+- Client libraries are described as frontend utilities for API access and query handling.
+- The document’s reason is “Curate client api,” marking it as part of a library documentation workflow.
+- Raw concept frames the task as documenting frontend libraries and points to `src/lib/api.ts`.
+- The flow again follows source -> analysis -> curated knowledge, indicating a distilled knowledge artifact.
+- Structure is compact, with Reason, Raw Concept, and Narrative sections.
+- Narrative/highlights state that the library contains API client and query client helpers.
+- Notable entity: `api.ts`, likely the central client module for frontend API integration.
