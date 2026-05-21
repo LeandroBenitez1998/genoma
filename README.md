@@ -1,5 +1,9 @@
 # 🧬 Genoma — Agent-Agnostic Evolution Dashboard
 
+<div align="center">
+  <img src="./genoma_logo.png" alt="Genoma Logo" width="200" />
+</div>
+
 **Autonomous Evolution Interface** — Cross-agent observability, evaluation, and evolution dashboard for any AI coding agent (Claude Code, Hermes, Codex, OpenCode, etc.).
 
 ---
