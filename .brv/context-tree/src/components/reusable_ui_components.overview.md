@@ -1,7 +1,0 @@
-- Reusable UI components are curated as shared dashboard building blocks, with emphasis on composition and interactions.
-- The document’s reason is to “Curate component library,” indicating it is part of a knowledge curation workflow.
-- Raw concept notes the task as documenting shared components and references a concrete file: `src/components/ApiConfigCard.tsx`.
-- The flow is explicitly source -> analysis -> curated knowledge, showing this is a transformed summary rather than raw implementation notes.
-- Structure is minimal: a Reason section, Raw Concept section, and Narrative section.
-- Narrative/highlights repeat that these components support dashboard UI composition and interactions.
-- Notable entity: `ApiConfigCard.tsx`, suggesting at least one reusable card component in the UI layer.

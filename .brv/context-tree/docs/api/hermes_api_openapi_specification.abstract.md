@@ -1,1 +1,0 @@
-Hermes API OpenAPI 3.1 specification defines typed endpoints for skills, evolution runs, jobs, and health checks, with standardized 503 error handling for the dashboard.

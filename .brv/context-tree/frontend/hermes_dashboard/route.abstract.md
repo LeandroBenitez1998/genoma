@@ -1,1 +1,0 @@
-Provides a catch-all Next.js API proxy to the Hermes backend and a token endpoint that scrapes the session token from the web server HTML.

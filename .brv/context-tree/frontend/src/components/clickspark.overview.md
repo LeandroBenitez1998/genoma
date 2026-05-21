@@ -1,7 +1,0 @@
-- Reusable “ClickSpark” wrapper component that adds a click-triggered spark animation over its children using a canvas overlay.
-- Exposes configurable props for spark color, size, radius, count, duration, and wrapper className.
-- Uses a `canvas` positioned absolutely over the content and ignores pointer events so child interaction remains intact.
-- Tracks spark particles in a ref and animates them with requestAnimationFrame until each spark’s lifetime ends.
-- On click, emits `sparkCount` sparks radiating in evenly spaced angles from the click position.
-- Automatically resizes the canvas to match the parent element via `ResizeObserver`.
-- Notable pattern: animation state is kept outside React state for performance, with manual cleanup of RAF and observer on unmount.

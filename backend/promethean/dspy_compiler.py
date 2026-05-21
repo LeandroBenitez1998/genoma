@@ -194,10 +194,7 @@ import json
 import dspy
 
 # ── Configure LM ──
-import os
-_ollama_base = os.getenv("OLLAMA_API_BASE", "http://localhost:11434/v1")
-_ollama_model = os.getenv("SDD_OLLAMA_MODEL", os.getenv("SDD_EVOLVE_MODEL", "gemma4:31b-cloud"))
-lm = dspy.LM(f"openai/{_ollama_model}", api_base=_ollama_base, api_key="ollama", temperature=0.3)
+lm = dspy.LM("openrouter/deepseek/deepseek-chat", temperature=0.3)
 dspy.configure(lm=lm)
 
 # ── Load Dataset ──

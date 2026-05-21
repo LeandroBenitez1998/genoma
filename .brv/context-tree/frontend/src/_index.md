@@ -1,52 +1,53 @@
 ---
-children_hash: 39a72abd03573b8a0595d756d5ed750559bca3cddd7d080af1f7d84354e25316
-compression_ratio: 0.19980787704130643
+children_hash: 90692b63a08a05d9811e0d3979c4a61bc3467fb2063e5c3b3eb75018971bdcc6
+compression_ratio: 0.09087154068566708
 condensation_order: 1
 covers: [components/_index.md, context.md, functioncallingpage.md, lib/_index.md, page.md, settingspage.md, sidebar.md]
-covers_token_total: 5205
+covers_token_total: 4842
 summary_level: d1
-token_count: 1040
+token_count: 440
 type: summary
 ---
-## Frontend Component Structure
+# Frontend Architecture (src)
 
-This group documents the core `src/components/` and `src/app/` presentation layer for the Hermes dashboard, centered on a shared page shell, navigation, and a small set of interactive UI components. The main architectural pattern is client-side React with animated Framer Motion transitions, Tailwind-style utility classes, and lazy-loaded page content in `src/app/page.tsx`.
+## Overview
+Next.js frontend with lazy-loaded page components, React Query for server state, and Framer Motion animations. Connects to FastAPI backend via typed API client.
 
-### Layout and navigation
+## Page Structure
 
-- **`sidebar.md`** defines the primary dashboard navigation. It exports the `Page` union (`overview`, `skills`, `evolution`, `datasets`, `memory`, `metrics`, `logs`, `settings`) and renders a collapsible, sticky left sidebar with icon-labeled nav items, active-state styling, animated label visibility, and width transitions between `240` and `64`.
-- **`page.md`** is the top-level `Home` page shell in `src/app/page.tsx`. It maps `Page` values to dynamically imported components and renders them beside `Sidebar`, keeping page selection in local state.
-- Together, `page.md` and `sidebar.md` establish the dashboard’s navigation contract: the sidebar drives page state, and `Home` resolves the active page into the corresponding lazily loaded view.
+**8 Navigation Sections** (see `sidebar.md` for full nav):
+| Page | Component | Purpose |
+|------|-----------|---------|
+| Overview | `OverviewPage` | Dashboard home |
+| Skills | `SkillStudioPage` | Skill management |
+| Evolution | `EvolutionPage` | Evolution engine control |
+| Datasets | `DatasetPage` | Dataset analysis |
+| Memory | `MemoryPage` | Memory/intelligence |
+| Metrics | `MetricsPage` | Analytics & metrics |
+| Logs | `LogsPage` | Live log streaming |
+| Settings | `SettingsPage` | System paths & env vars |
 
-### Interaction and configuration components
+All pages lazy-loaded via `next/dynamic` with loading states.
 
-- **`apiconfigcard.md`** documents `components/ApiConfigCard.tsx`, an animated glass-card for API endpoint configuration. It manages `OPENAI_API_KEY`, `NOUS_API_KEY`, and `OLLAMA_ENDPOINT`, with masked/unmasked toggles, per-field connection testing, and simulated success/error states.
-- **`clickspark.md`** documents `components/bits/ClickSpark.tsx`, a reusable click-feedback wrapper that draws animated spark particles on a canvas overlay. It is generic enough to wrap arbitrary children and handles sizing, spark tracking, and animation with `ResizeObserver` and `requestAnimationFrame`.
+## Key Components
 
-### Page implementations and app composition
+- **`Sidebar`** — Collapsible (64px/240px), animated via Framer Motion, cyan accent theme, dual light/dark mode
+- **`SettingsPage`** — Displays system paths, env vars (OPENAI_API_KEY, HERMES_AGENT_REPO), health status via `fetchHealth()`
 
-- **`settingspage.md`** covers `src/components/pages/SettingsPage.tsx`. This page surfaces system paths and environment variables, calls `fetchHealth()` on mount, shows Hermes repo and evolution engine paths plus skill counts, and allows toggling visibility of env values.
-- **`functioncallingpage.md`** is a preserved stub for `src/components/pages/FunctionCallingPage.tsx`. The content indicates the page has been removed and should be replaced by `page.tsx` for available pages.
-- **`page.md`** also reveals the page registry used by the app shell: `OverviewPage`, `SkillStudioPage`, `EvolutionPage`, `DatasetPage`, `MemoryPage`, `MetricsPage`, `LogsPage`, and `SettingsPage`, with loading placeholders for each dynamic import.
+## API Client (`lib/api.ts`)
 
-### Shared frontend patterns
+See `lib/_index.md` and `api_client_library.md` for full details.
 
-- Client-side rendering is used throughout via `"use client"`.
-- Motion/animation is a consistent UI pattern across the component set.
-- The dashboard is themed for dark/light modes and uses utility-first styling with glass-card surfaces.
-- The navigation model is strongly typed through the shared `Page` union exported from `sidebar.md` and consumed by `page.md`.
+**Resilience:** 15s AbortController timeouts, retry on 401 with token refresh, WebSocket 3s auto-reconnect
 
-### API client foundation
+**Auth:** `X-Hermes-Session-Token` header, lazy-loaded session
 
-- **`lib/_index.md`** summarizes `src/lib/api.ts` as the typed API client for the frontend. It provides React Query-compatible server-state access, typed endpoints for jobs, skills, evolution, datasets, metrics, and health checks, plus WebSocket streaming support.
-- Key resilience decisions in `api_client_library.md` include `AbortController` timeouts, typed `ApiError` kinds (`network`, `timeout`, `server`, `client`), one-time token refresh on `401`, and WebSocket auto-reconnect after `3s`.
-- The client authenticates with `X-Hermes-Session-Token` and falls back to `http://127.0.0.1:9119` when `NEXT_PUBLIC_API_BASE` is unset.
+**Env:** `NEXT_PUBLIC_API_BASE` → `http://127.0.0.1:9119`
 
-### Drill-down map
+**Key Types:** `SkillInfo`, `SkillDetail`, `EvolutionJob`, `EvolutionRun`, `MetricsData`, `DatasetInfo`, `ConstraintResult`, `ProviderSummary`
 
-- See **`sidebar.md`** for the complete navigation model and `Page` union.
-- See **`page.md`** for the dynamic page registry and shell composition.
-- See **`settingspage.md`** for environment and health display logic.
-- See **`apiconfigcard.md`** for API endpoint configuration UI behavior.
-- See **`clickspark.md`** for the reusable click animation wrapper.
-- See **`lib/_index.md`** and **`api_client_library.md`** for the typed API client architecture and endpoint surface.
+## Source Files
+- `src/app/page.tsx` — Root page with page routing
+- `src/components/Sidebar.tsx` — Navigation sidebar
+- `src/components/pages/*.tsx` — Page components (lazy-loaded)
+- `src/lib/api.ts` — Typed API client

@@ -1,17 +1,44 @@
-- OpenAPI 3.1 specification for the Hermes Agent API used by the Next.js dashboard and the hermes-cli/FastAPI backend gateway.
-- Defines major endpoint groups for skills, evolution runs, jobs, and backend health checks.
-- Standardizes typed JSON responses via reusable schemas such as SkillInfo, SkillDetail, EvolutionRun, EvolutionJob, ApiError, and HealthStatus.
-- Establishes a unified error-handling contract: any non-2xx or network failure maps to ApiError, and 503 responses indicate a disconnected state in the frontend.
-- Includes evolution lifecycle operations, job management actions, paginated job logs, and a health endpoint that reports repository and skill/evolution directory status.
-- Notes configuration behavior: NEXT_PUBLIC_API_BASE can override the default local server URL.
-- Documents validation/pattern expectations for endpoint paths and enumerates EvolutionJob status values.
-Structure / sections summary:
-- Top-level metadata and rationale for documenting the backend API contract.
-- Narrative section describing the document’s structure, dependencies, highlights, and frontend rules.
-- Full OpenAPI definition with server configuration, path operations for /api/skills, /api/evolution, /api/jobs, and /api/health.
-- Components section defining schemas for skills, runs, jobs, typed errors, health status, and the standardized ServiceUnavailable response.
-Notable entities, patterns, or decisions:
-- Endpoint regex patterns are explicitly listed for routing/contract clarity.
-- ServiceUnavailable is the standardized 503 fallback used to drive “Desconectado” UI behavior and retry affordances.
-- EvolutionJob status enum captures the full job lifecycle from queued through completed/failed.
-- The spec distinguishes skill listing/detail/history, evolution start/runs, job retrieval/cancel/logs, and health reporting as separate contract surfaces.
+## Hermes API OpenAPI Specification Overview
+
+### Key Points
+
+- **OpenAPI 3.1.0** specification for Hermes backend (FastAPI/Python)
+- Base server: `http://127.0.0.1:8000` (overridable via `NEXT_PUBLIC_API_BASE` environment variable)
+- Frontend (Next.js) consumes these endpoints with a defined response contract
+- **Evolution system** enables iterative skill improvement with scoring (baseline vs evolved scores)
+- **Jobs system** provides real-time tracking of evolution runs with status, logs, and progress
+- Standardized **ApiError schema** with typed error kinds for consistent frontend error handling
+- WebSocket endpoint (`/ws`) noted but streaming details not included in this spec excerpt
+
+---
+
+### Section Structure
+
+| Section | Path Prefix | Methods |
+|---|---|---|
+| Skills | `/api/skills` | GET (list, detail, evolution-history) |
+| Evolution | `/api/evolution` | GET (runs), POST (start) |
+| Jobs | `/api/jobs` | GET (list, detail), DELETE (cancel), GET logs |
+| Health | `/api/health` | GET |
+
+---
+
+### Notable Schemas
+
+| Schema | Purpose |
+|---|---|
+| `SkillInfo` | Basic skill metadata (name, path, providers, category, size) |
+| `SkillDetail` | Full skill content including parsed frontmatter, body, and raw content |
+| `EvolutionRun` | Historical record with baseline_score, evolved_score, improvement |
+| `EvolutionJob` | Active job with status enum and progress tracking |
+| `ApiError` | Typed error contract (network/timeout/server/client) |
+
+---
+
+### Notable Decisions / Patterns
+
+- **Job status enum** includes 11 states: `queued → loading_skill → building_dataset → validating → configuring → optimizing → evaluating → saving → completed/failed`
+- **Evolution constraints**: `iterations` (1-20, default 3), `eval_source` (default: "synthetic")
+- **503 handling**: All endpoints share a standardized `ServiceUnavailable` response; frontend shows "Desconectado" state with retry option
+- **Health endpoint** exposes system state including `hermes_repo_exists`, `skills_count`, and `categories` breakdown
+- **Job logs**: Streaming paginated logs via `?since=` query parameter

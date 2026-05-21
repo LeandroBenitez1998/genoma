@@ -1,1 +1,0 @@
-This global stylesheet defines the Genoma design system, Tailwind theme tokens, dark-mode overrides, and reusable glass, gradient, and input utility classes.

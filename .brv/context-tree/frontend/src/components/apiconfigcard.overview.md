@@ -1,8 +1,0 @@
-- Client-side configuration card for model/API endpoints with animated UI and per-field connection testing.
-- Manages three editable fields: OpenAI API key, Nous API key, and Ollama endpoint.
-- Lets users toggle visibility of each value, store input locally in component state, and trigger a simulated connection test.
-- Test flow updates field status through idle → testing → success/error, then resets to idle after 3 seconds.
-- Uses Framer Motion for entry/interaction animations and Lucide icons for field/status visuals.
-- Visual feedback is strongly status-driven, with distinct colors and labels for Test, Testing..., Connected, and Failed.
-- Structure is simple: header, then a list of animated input rows combining input, reveal/hide button, and test button.
-- Notable decisions: connection testing is mocked with a 1.5s delay and success is based only on whether the field has a non-empty value.

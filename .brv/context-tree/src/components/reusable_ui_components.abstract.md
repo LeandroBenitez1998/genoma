@@ -1,1 +1,0 @@
-Reusable dashboard UI components include API config cards, sidebar, theme controls, and animated elements for composing and interacting with the interface.

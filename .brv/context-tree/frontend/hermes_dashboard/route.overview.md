@@ -1,7 +1,0 @@
-- Contains a Next.js API route implementation that acts as a catch-all proxy to a Hermes backend server at `http://127.0.0.1:8000`.
-- The main `handler` forwards GET/POST/PUT/DELETE/PATCH requests, preserving method, query string, headers, and request body when applicable.
-- It removes the `host` header before proxying and attempts to forward an `x-hermes-session-token`; if absent, it sets an empty token header.
-- Responses are normalized by reading JSON when `content-type` includes `application/json`, otherwise reading text, and then returning via `NextResponse.json`.
-- Errors are converted into a `503` response with a `detail` message indicating the backend is unreachable.
-- A second GET endpoint fetches the root HTML from Hermes, extracts `__HERMES_SESSION_TOKEN__` via regex, and returns it as JSON; failures also return `503` with `token: null`.
-- Notable decisions/patterns: explicit precedence for more specific `src/app/api/*` routes, browser-friendly session token proxying to avoid CORS issues, and a local backend target aimed at a FastAPI service.

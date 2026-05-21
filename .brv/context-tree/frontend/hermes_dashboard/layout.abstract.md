@@ -1,1 +1,0 @@
-This root layout sets metadata, loads fonts and global styles, applies theme initialization, and wraps the app with tooltip, query, and background providers.

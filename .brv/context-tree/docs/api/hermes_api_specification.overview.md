@@ -1,6 +1,0 @@
-- The OpenAPI specification is the canonical contract for Hermes API endpoints and payloads.
-- It defines the request/response shapes used by the dashboard and backend integrations.
-- The only listed source file is `docs/api/hermes-api.openapi.yaml`.
-- The documented flow is client request -> API endpoint -> response schema.
-- Structure is centered on API schema governance rather than implementation details.
-- Notable decision: using an OpenAPI document as the authoritative interface definition for the system.

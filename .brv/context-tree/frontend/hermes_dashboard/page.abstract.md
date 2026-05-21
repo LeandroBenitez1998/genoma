@@ -1,1 +1,0 @@
-This Next.js page implements an evolution dashboard for skills, with provider filtering, run stats, job polling, and before/after diff viewing.

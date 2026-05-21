@@ -1,1 +1,0 @@
-This client-side card lets users enter API endpoint credentials, toggle visibility, and simulate connection tests with animated status feedback.

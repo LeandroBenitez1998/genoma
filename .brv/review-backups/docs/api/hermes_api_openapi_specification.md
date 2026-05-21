@@ -1,27 +1,27 @@
 ---
 title: Hermes API OpenAPI Specification
-summary: Complete OpenAPI 3.0 specification defining all Hermes backend endpoints including job management, skills, evolution, and WebSocket streaming
+summary: OpenAPI 3.0 specification for Hermes dashboard backend API with ~20 endpoints
 tags: []
 related: []
 keywords: []
 createdAt: '2026-04-28T03:39:56.018Z'
-updatedAt: '2026-04-28T03:46:41.133Z'
+updatedAt: '2026-04-28T03:39:56.018Z'
 ---
 ## Reason
-Preserving complete OpenAPI 3.0 spec for Hermes backend API
+Preserving complete API specification with all endpoints, schemas, and examples
 
 ## Raw Concept
 **Task:**
-Document Hermes backend API specification
+API specification for Hermes dashboard backend
 
 **Files:**
 - docs/api/hermes-api.openapi.yaml
 
-**Timestamp:** 2026-04-28
+**Timestamp:** 2026-04-28T03:39:56.017Z
 
 ## Narrative
 ### Structure
-OpenAPI 3.0 specification with paths for /jobs, /skills, /evolve, /config, and WebSocket /ws endpoint
+OpenAPI 3.0 specification defining REST endpoints for the Hermes agent self-evolution dashboard
 
 ---
 

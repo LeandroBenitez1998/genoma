@@ -1,1 +1,0 @@
-The run store defines SQL schema and helpers for persisting executions and related metadata.

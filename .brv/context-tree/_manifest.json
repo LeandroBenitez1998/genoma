@@ -1,21 +1,39 @@
 {
   "active_context": [
     {
+      "order": 3,
+      "path": "_index.md",
+      "tokens": 546,
+      "type": "summary"
+    },
+    {
       "order": 2,
       "path": "backend/_index.md",
-      "tokens": 1273,
+      "tokens": 198,
       "type": "summary"
     },
     {
       "order": 2,
       "path": "docs/_index.md",
-      "tokens": 638,
+      "tokens": 275,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "frontend/_index.md",
+      "tokens": 409,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "meta/_index.md",
+      "tokens": 147,
       "type": "summary"
     },
     {
       "order": 1,
-      "path": "backend/eval/_index.md",
-      "tokens": 74,
+      "path": "backend/backend/_index.md",
+      "tokens": 423,
       "type": "summary"
     },
     {
@@ -51,60 +69,6 @@
       "type": "context"
     },
     {
-      "abstractPath": "backend/collectors/claude_code_collector.abstract.md",
-      "abstractTokens": 40,
-      "importance": 50,
-      "path": "backend/collectors/claude_code_collector.md",
-      "tokens": 40,
-      "type": "context"
-    },
-    {
-      "abstractPath": "backend/collectors/collectors.abstract.md",
-      "abstractTokens": 30,
-      "importance": 50,
-      "path": "backend/collectors/collectors.md",
-      "tokens": 30,
-      "type": "context"
-    },
-    {
-      "abstractPath": "backend/collectors/hermes_collector.abstract.md",
-      "abstractTokens": 35,
-      "importance": 50,
-      "path": "backend/collectors/hermes_collector.md",
-      "tokens": 35,
-      "type": "context"
-    },
-    {
-      "abstractPath": "backend/eval/evaluation_engine.abstract.md",
-      "abstractTokens": 25,
-      "importance": 50,
-      "path": "backend/eval/evaluation_engine.md",
-      "tokens": 25,
-      "type": "context"
-    },
-    {
-      "importance": 50,
-      "path": "backend/evolution-workflow-is-end-to-end-across-ui-api-and-job-tracking.md",
-      "tokens": 413,
-      "type": "context"
-    },
-    {
-      "abstractPath": "backend/promethean/promethean_orchestration.abstract.md",
-      "abstractTokens": 28,
-      "importance": 50,
-      "path": "backend/promethean/promethean_orchestration.md",
-      "tokens": 28,
-      "type": "context"
-    },
-    {
-      "abstractPath": "backend/storage/run_store.abstract.md",
-      "abstractTokens": 23,
-      "importance": 50,
-      "path": "backend/storage/run_store.md",
-      "tokens": 23,
-      "type": "context"
-    },
-    {
       "importance": 50,
       "path": "docs/api/context.md",
       "tokens": 55,
@@ -112,10 +76,10 @@
     },
     {
       "abstractPath": "docs/api/hermes_api_openapi_specification.abstract.md",
-      "abstractTokens": 42,
+      "abstractTokens": 0,
       "importance": 50,
       "path": "docs/api/hermes_api_openapi_specification.md",
-      "tokens": 42,
+      "tokens": 0,
       "type": "context"
     },
     {
@@ -124,68 +88,6 @@
       "importance": 50,
       "path": "frontend/hermes_dashboard/architecture_overview.md",
       "tokens": 0,
-      "type": "context"
-    },
-    {
-      "abstractPath": "frontend/hermes_dashboard/globals.abstract.md",
-      "abstractTokens": 39,
-      "importance": 50,
-      "path": "frontend/hermes_dashboard/globals.md",
-      "tokens": 39,
-      "type": "context"
-    },
-    {
-      "abstractPath": "frontend/hermes_dashboard/hermes_dashboard_frontend.abstract.md",
-      "abstractTokens": 43,
-      "importance": 50,
-      "path": "frontend/hermes_dashboard/hermes_dashboard_frontend.md",
-      "tokens": 43,
-      "type": "context"
-    },
-    {
-      "abstractPath": "frontend/hermes_dashboard/layout.abstract.md",
-      "abstractTokens": 39,
-      "importance": 50,
-      "path": "frontend/hermes_dashboard/layout.md",
-      "tokens": 39,
-      "type": "context"
-    },
-    {
-      "abstractPath": "frontend/hermes_dashboard/page.abstract.md",
-      "abstractTokens": 36,
-      "importance": 50,
-      "path": "frontend/hermes_dashboard/page.md",
-      "tokens": 36,
-      "type": "context"
-    },
-    {
-      "abstractPath": "frontend/hermes_dashboard/route.abstract.md",
-      "abstractTokens": 35,
-      "importance": 50,
-      "path": "frontend/hermes_dashboard/route.md",
-      "tokens": 35,
-      "type": "context"
-    },
-    {
-      "importance": 50,
-      "path": "frontend/session-token-proxying-is-the-frontend-backend-bridge.md",
-      "tokens": 419,
-      "type": "context"
-    },
-    {
-      "abstractPath": "frontend/src/components/apiconfigcard.abstract.md",
-      "abstractTokens": 36,
-      "importance": 50,
-      "path": "frontend/src/components/apiconfigcard.md",
-      "tokens": 36,
-      "type": "context"
-    },
-    {
-      "abstractPath": "frontend/src/components/clickspark.abstract.md",
-      "abstractTokens": 34,
-      "importance": 50,
-      "path": "frontend/src/components/clickspark.md",
-      "tokens": 34,
       "type": "context"
     },
     {
@@ -243,49 +145,21 @@
       "type": "context"
     },
     {
-      "importance": 50,
-      "path": "frontend/the-app-uses-a-consistent-lazy-loaded-theme-aware-shell-across-routing-layers.md",
-      "tokens": 465,
-      "type": "context"
-    },
-    {
       "abstractPath": "meta/curation_context/empty_context.abstract.md",
       "abstractTokens": 47,
       "importance": 50,
       "path": "meta/curation_context/empty_context.md",
       "tokens": 47,
       "type": "context"
-    },
-    {
-      "importance": 50,
-      "path": "meta/project_config/project_configuration.md",
-      "tokens": 573,
-      "type": "context"
-    },
-    {
-      "abstractPath": "src/components/reusable_ui_components.abstract.md",
-      "abstractTokens": 39,
-      "importance": 50,
-      "path": "src/components/reusable_ui_components.md",
-      "tokens": 39,
-      "type": "context"
-    },
-    {
-      "abstractPath": "src/lib/client_libraries.abstract.md",
-      "abstractTokens": 30,
-      "importance": 50,
-      "path": "src/lib/client_libraries.md",
-      "tokens": 30,
-      "type": "context"
     }
   ],
-  "generated_at": "2026-05-21T07:44:45.447Z",
+  "generated_at": "2026-04-28T03:48:43.119Z",
   "lane_tokens": {
-    "contexts": 2747,
+    "contexts": 323,
     "stubs": 0,
-    "summaries": 1985
+    "summaries": 1998
   },
-  "source_fingerprint": "1858126ec26cb13bdcac16271e0a5c192087f88406be4117bebf0824cc495ed1",
-  "total_tokens": 4732,
+  "source_fingerprint": "f717f55629192fff9133dba5a7fa2b99fdf11cd9cedfa38aab2cc7247db0c17b",
+  "total_tokens": 2321,
   "version": 1
 }

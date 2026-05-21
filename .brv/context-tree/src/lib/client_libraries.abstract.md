@@ -1,1 +1,0 @@
-Frontend client libraries provide API access and query client helpers for handling client-side requests and data queries.

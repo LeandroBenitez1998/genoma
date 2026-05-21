@@ -1,6 +1,0 @@
-- Defines the root Next.js layout for the Genoma frontend, wrapping all pages in shared providers and global styling.
-- Imports Google fonts `Inter` and `Geist_Mono` and exposes them via CSS variables on the `<html>` element.
-- Sets page metadata with the title “Genoma — Agent-Agnostic Evolution Interface” and a description emphasizing cross-agent evaluation/evolution and zero-friction setup.
-- Injects an inline script in the document head to initialize the theme from `localStorage` key `genoma-theme` or system dark mode preference, toggling the `dark` class on `<html>`.
-- Wraps the app with `TooltipProvider` and `ReactQueryProvider`, and includes a `ThemeAwareBackground` component before rendering children.
-- Notable patterns/decisions: `suppressHydrationWarning` is enabled to avoid theme mismatch issues, and the layout applies `min-h-screen`, background, text, and antialiasing classes to the body.
