@@ -9,7 +9,7 @@
 
 // ── Env resolution ───────────────────────────────────────────────────
 function resolveBase(): string {
-  // Hardcoded to FastAPI backend — env vars don't survive Turbopack HMR
+  // Hardcoded to FastAPI backend — single origin, no build-time env needed
   return "http://localhost:8000";
 }
 
@@ -226,6 +226,8 @@ export interface SkillDetail {
 export interface EvolutionRun {
   skill_name: string;
   timestamp: string;
+  run_dir: string;
+  status?: string;
   baseline_score: number;
   evolved_score: number;
   improvement: number;

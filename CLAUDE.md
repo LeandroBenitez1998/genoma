@@ -18,7 +18,7 @@ Skills available from multiple sources:
 | React components, hooks, JSX, TSX files | `~/.claude/skills/react-doctor/SKILL.md` |
 | Frontend UI design, mockups, layouts | `~/.claude/skills/frontend-patterns/SKILL.md` |
 | Tailwind CSS classes, utilities, styles | `~/.claude/skills/tailwind/SKILL.md` |
-| Next.js config, routing, Turbopack, App Router | `~/.claude/skills/nextjs-turbopack/SKILL.md` |
+| Vinext/Vite config, dev server, build, API proxy | Uses vinext (@AGENTS.md section) |
 | TDD, unit tests, test-first workflow | `~/.claude/skills/tdd-workflow/SKILL.md` |
 | PostgreSQL, SQL, database queries, migrations | `~/.opencode/skills/postgres-patterns/SKILL.md` |
 | Component caching, memoization, performance | `~/.opencode/skills/cache-components/SKILL.md` |

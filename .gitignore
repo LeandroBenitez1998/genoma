@@ -3,15 +3,14 @@ node_modules/
 pnpm-lock.yaml
 .pnpm-store/
 
-# Next.js
+# Build output
+dist/
 .next/
 out/
 build/
-dist/
 
 # Build & cache
 *.tsbuildinfo
-turbopack-cache/
 .turbo/
 
 # Python
@@ -59,4 +58,3 @@ yarn-error.log*
 # Misc
 .cache/
 tmp/
-.turbopack/

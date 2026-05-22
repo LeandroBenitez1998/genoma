@@ -635,29 +635,30 @@ export default function EvolutionPage() {
                                 {run.elapsed_seconds?.toFixed(0)}s
                               </div>
                               <button
-                                onClick={(e) => {
+                                  onClick={(e) => {
                                   e.stopPropagation();
-                                  if (openDiff?.skill === skillName && openDiff?.runDir === run.timestamp) {
+                                  const targetDir = run.run_dir || "latest";
+                                  if (openDiff?.skill === skillName && openDiff?.runDir === targetDir) {
                                     setOpenDiff(null);
                                   } else {
-                                    setOpenDiff({ skill: skillName, runDir: run.timestamp });
+                                    setOpenDiff({ skill: skillName, runDir: targetDir });
                                   }
                                 }}
                                 className={`text-[10px] px-2 py-0.5 rounded-lg transition-colors border ${
-                                  openDiff?.skill === skillName && openDiff?.runDir === run.timestamp
+                                  openDiff?.skill === skillName && openDiff?.runDir === (run.run_dir || "latest")
                                     ? "bg-accent-violet/10 text-accent-violet border-accent-violet/20"
                                     : "bg-white/[0.03] text-muted-foreground hover:text-foreground hover:bg-white/[0.08] border-white/[0.06]"
                                 }`}
                               >
                                 <GitBranch className="w-3 h-3 inline mr-0.5" />
-                                {openDiff?.skill === skillName && openDiff?.runDir === run.timestamp ? "Close" : "Diff"}
+                                {openDiff?.skill === skillName && openDiff?.runDir === (run.run_dir || "latest") ? "Close" : "Diff"}
                               </button>
                             </div>
                           </SpotlightCard>
-                          {openDiff?.skill === skillName && openDiff?.runDir === run.timestamp && (
+                          {openDiff?.skill === skillName && openDiff?.runDir === (run.run_dir || "latest") && (
                             <SkillDiffViewer
                               skillName={skillName}
-                              runDir={run.timestamp}
+                              runDir={run.run_dir || "latest"}
                               onClose={() => setOpenDiff(null)}
                             />
                           )}

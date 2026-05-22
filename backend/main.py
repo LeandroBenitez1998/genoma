@@ -34,7 +34,7 @@ if _env_ev:
 else:
     _sibling = Path(__file__).parent.parent.parent / "hermes-agent-self-evolution"
     _home = Path.home() / ".hermes" / "hermes-agent-self-evolution"
-    EVOLUTION_DIR = _sibling if _sibling.exists() else _home
+    EVOLUTION_DIR = _home if _home.exists() else _sibling
 
 SKILLS_DIR = HERMES_REPO / "skills"
 MEMORY_DIR = Path.home() / ".hermes" / "memory"
@@ -400,7 +400,7 @@ async def list_evolution_runs():
                     if mf.exists():
                         try:
                             data = _normalize_metrics(json.loads(mf.read_text()))
-                            data.setdefault("run_dir", run_dir.name)
+                            data["run_dir"] = run_dir.name
                             all_runs.append(data)
                             seen_skills.add(skill_dir.name)
                         except Exception:
