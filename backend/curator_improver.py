@@ -58,11 +58,12 @@ class SkillImprover:
         # Build improvement proposal
         proposal = self._build_proposal(audit, skill_path)
         improvement_prompt = self._build_improvement_prompt(audit, proposal)
+        audit_dict = self.auditor.audit_to_dict(audit)
 
         return {
             "status": "ok",
             "skill_name": skill_name,
-            "audit": self._audit_to_dict(audit),
+            "audit": audit_dict,
             "proposal": proposal,
             "improvement_prompt": improvement_prompt,
             "skill_path": str(skill_path),

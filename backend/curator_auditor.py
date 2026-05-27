@@ -307,3 +307,29 @@ class SkillAuditor:
             suggestions.append(f"Overall quality is {metrics.overall_score:.1%} — prioritize skill for improvement")
 
         return suggestions
+
+    def audit_to_dict(self, audit: SkillAuditReport) -> dict:
+        """Convert SkillAuditReport to dict for JSON serialization."""
+        return {
+            "skill_name": audit.skill_name,
+            "file_path": str(audit.file_path),
+            "metrics": {
+                "completeness": round(audit.metrics.completeness, 2),
+                "description_clarity": round(audit.metrics.description_clarity, 2),
+                "instruction_quality": round(audit.metrics.instruction_quality, 2),
+                "example_realism": round(audit.metrics.example_realism, 2),
+                "resource_completeness": round(audit.metrics.resource_completeness, 2),
+                "overall_score": round(audit.metrics.overall_score, 2),
+            },
+            "issues": [
+                {
+                    "category": issue.category,
+                    "severity": issue.severity,
+                    "title": issue.title,
+                    "description": issue.description,
+                    "suggestion": issue.suggestion,
+                }
+                for issue in audit.issues
+            ],
+            "suggestions": audit.suggestions,
+        }

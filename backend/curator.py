@@ -627,7 +627,7 @@ def audit_skill(skill_name: str) -> dict:
     return {
         "status": "ok",
         "skill_name": skill_name,
-        "audit": auditor._audit_to_dict(audit),
+        "audit": auditor.audit_to_dict(audit),
     }
 
 
