@@ -34,6 +34,7 @@ import {
   curatorRestore,
   curatorRun,
   fetchCuratorReport as fetchCuratorReportDetail,
+  curatorEvolveSkill,
   type CuratorStatus,
   type CuratorSkillUsage,
   type CuratorReport,
@@ -195,6 +196,7 @@ export default function CuratorPage() {
   const [selectedReport, setSelectedReport] = useState<CuratorReportDetail | null>(null);
   const [runResult, setRunResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [evolvingSkill, setEvolvingSkill] = useState<string | null>(null);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -229,6 +231,23 @@ export default function CuratorPage() {
       setRunResult(`❌ ${err instanceof Error ? err.message : "Run failed"}`);
     }
     setRunning(false);
+  };
+
+  const handleEvolveSkill = async (skillName: string) => {
+    setEvolvingSkill(skillName);
+    try {
+      const result = await curatorEvolveSkill(skillName, false);
+      if (result.status === "ok") {
+        setRunResult(`✅ Evolution started for ${skillName}`);
+      } else {
+        setRunResult(`❌ Evolution failed for ${skillName}`);
+      }
+      setTimeout(() => fetchAll(), 2000);
+    } catch (err) {
+      setRunResult(`❌ ${err instanceof Error ? err.message : "Evolution failed"}`);
+    } finally {
+      setEvolvingSkill(null);
+    }
   };
 
   const handlePin = async (skill: string, currentlyPinned: boolean) => {
@@ -460,9 +479,20 @@ export default function CuratorPage() {
                           ))}
                         </div>
                       </div>
-                      <div className="shrink-0 text-right">
+                      <div className="shrink-0 flex flex-col items-end gap-2">
                         <p className="font-mono text-sm text-accent-violet">{skill.priority_score}</p>
                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground">score</p>
+                        <button
+                          onClick={() => handleEvolveSkill(skill.name)}
+                          disabled={evolvingSkill === skill.name}
+                          className="text-[10px] px-2 py-1 rounded-md bg-accent-violet/20 text-accent-violet hover:bg-accent-violet/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          {evolvingSkill === skill.name ? (
+                            <Loader2 className="w-3 h-3 inline mr-1 animate-spin" />
+                          ) : (
+                            "Improve"
+                          )}
+                        </button>
                       </div>
                     </div>
                   </div>

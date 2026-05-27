@@ -1536,6 +1536,14 @@ async def curator_improve_proposal(skill_name: str):
     return propose_skill_improvement(skill_name)
 
 
+@app.post("/api/curator/evolve/{skill_name:path}")
+async def curator_evolve_skill(skill_name: str, dry_run: bool = False):
+    """Trigger skill evolution (auto-improvement) via SDD pipeline."""
+    from .skill_evolver import SkillEvolver
+    evolver = SkillEvolver()
+    return evolver.evolve_skill(skill_name, dry_run=dry_run)
+
+
 # ═══════════════════════════════════════════════════════════════════════
 # CANONICAL RUN ENDPOINTS — Phase 4 (SQLite Storage + Cross-Agent Queries)
 # ═══════════════════════════════════════════════════════════════════════

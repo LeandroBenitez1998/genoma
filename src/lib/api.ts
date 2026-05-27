@@ -463,6 +463,12 @@ export const curatorRun = (sync = false) =>
     { method: "POST" }
   );
 
+export const curatorEvolveSkill = (skill: string, dryRun = false) =>
+  api<{ status: string; evolution_started: boolean; improvement_prompt?: string }>(
+    `/api/curator/evolve/${encodeURIComponent(skill)}?dry_run=${dryRun}`,
+    { method: "POST" }
+  );
+
 export const fetchCuratorReports = (limit = 10) =>
   api<{ reports: CuratorReport[] }>(`/api/curator/reports?limit=${limit}`);
 
