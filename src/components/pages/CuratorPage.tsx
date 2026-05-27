@@ -58,6 +58,31 @@ function formatDate(iso: string | null | undefined): string {
   }
 }
 
+function formatRelativeAge(iso: string | null | undefined): string {
+  if (!iso) return "sin fecha";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "sin fecha";
+
+  const diffMs = Date.now() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) return "hoy";
+  if (diffDays === 1) return "hace 1 día";
+  if (diffDays < 7) return `hace ${diffDays} días`;
+
+  const diffWeeks = Math.floor(diffDays / 7);
+  if (diffWeeks === 1) return "hace 1 semana";
+  if (diffWeeks < 5) return `hace ${diffWeeks} semanas`;
+
+  const diffMonths = Math.floor(diffDays / 30);
+  if (diffMonths === 1) return "hace 1 mes";
+  if (diffMonths < 12) return `hace ${diffMonths} meses`;
+
+  const diffYears = Math.floor(diffDays / 365);
+  if (diffYears === 1) return "hace 1 año";
+  return `hace ${diffYears} años`;
+}
+
 function stateColor(state: string): string {
   switch (state) {
     case "active": return "#22c55e";
@@ -94,6 +119,23 @@ function StateBadge({ state }: { state: string }) {
       {stateLabel(state)}
     </span>
   );
+}
+
+function priorityReasonLabel(reason: string): string {
+  switch (reason) {
+    case "pinned":
+      return "Pinned";
+    case "stale":
+      return "Stale";
+    case "high_usage":
+      return "High usage";
+    case "frequent_patches":
+      return "Many patches";
+    case "review_heavy":
+      return "Review-heavy";
+    default:
+      return reason;
+  }
 }
 
 // ── Sub-components ─────────────────────────────────────────────────
@@ -226,6 +268,7 @@ export default function CuratorPage() {
     if (search && !s.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
+  const topSkillsToImprove = status?.top_skills_to_improve ?? [];
 
   if (loading) {
     return (
@@ -333,7 +376,7 @@ export default function CuratorPage() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-4"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-4"
         >
           <SpotlightCard spotlightColor="rgba(6,182,212,0.08)" className="glass-card rounded-2xl p-5">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-3">
@@ -357,14 +400,71 @@ export default function CuratorPage() {
           <SpotlightCard spotlightColor="rgba(234,179,8,0.08)" className="glass-card rounded-2xl p-5">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-3">
               <TrendingUp className="w-3 h-3" />
-              Least Recently Used (Top 5)
+              Skills más dormidas (Top 5)
             </h3>
             {status.least_recently_used?.length > 0 ? (
               <div className="space-y-1.5">
-                {status.least_recently_used.map((s, i) => (
+                {status.least_recently_used.map((s) => (
                   <div key={s.name} className="flex items-center justify-between text-xs">
                     <span className="font-mono truncate max-w-[180px]">{s.name}</span>
-                    <span className="text-muted-foreground">{formatDate(s.last_used)}</span>
+                    <span className="text-muted-foreground">{formatRelativeAge(s.last_used)}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No usage data yet</p>
+            )}
+          </SpotlightCard>
+
+          <SpotlightCard spotlightColor="rgba(139,92,246,0.08)" className="glass-card rounded-2xl p-5">
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-3">
+              <TrendingUp className="w-3 h-3" />
+              Top Skills to Improve
+            </h3>
+            {topSkillsToImprove.length > 0 ? (
+              <div className="space-y-2">
+                {topSkillsToImprove.map((skill, i) => (
+                  <div
+                    key={skill.name}
+                    className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-violet/10 text-[10px] font-semibold text-accent-violet">
+                            {i + 1}
+                          </span>
+                          <span className="truncate font-mono text-xs font-medium">{skill.name}</span>
+                          {skill.pinned && (
+                            <span className="text-[10px] rounded-full border border-accent-violet/20 bg-accent-violet/10 px-2 py-0.5 text-accent-violet">
+                              pinned
+                            </span>
+                          )}
+                          {skill.state === "stale" && (
+                            <span className="text-[10px] rounded-full border border-[#eab308]/20 bg-[#eab308]/10 px-2 py-0.5 text-[#eab308]">
+                              stale
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-1 text-[10px] text-muted-foreground">
+                          {skill.use_count} uses · {skill.view_count} views · {skill.patch_count} patches
+                        </p>
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {skill.priority_reasons.map((reason) => (
+                            <span
+                              key={reason}
+                              className="rounded-full border border-white/[0.06] bg-white/[0.03] px-2 py-0.5 text-[10px] text-muted-foreground"
+                            >
+                              {priorityReasonLabel(reason)}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="font-mono text-sm text-accent-violet">{skill.priority_score}</p>
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">score</p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -78,6 +78,69 @@ EXTRA_SKILL_DIRS = [
 ]
 
 
+def _parse_timestamp(value: Optional[str]) -> Optional[datetime]:
+    """Parse an ISO-8601 timestamp from usage telemetry."""
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _priority_reasons(data: dict) -> list[str]:
+    """Explain why a skill is showing up in the improvement leaderboard."""
+    reasons: list[str] = []
+
+    if data.get("pinned"):
+        reasons.append("pinned")
+
+    if data.get("state") == "stale":
+        reasons.append("stale")
+
+    if int(data.get("use_count", 0) or 0) >= 10:
+        reasons.append("high_usage")
+
+    if int(data.get("patch_count", 0) or 0) >= 3:
+        reasons.append("frequent_patches")
+
+    if int(data.get("view_count", 0) or 0) > int(data.get("use_count", 0) or 0):
+        reasons.append("review_heavy")
+
+    return reasons or ["baseline"]
+
+
+def _priority_score(data: dict, now: datetime) -> int:
+    """Composite score used to rank skills that should be improved first.
+
+    Use count remains the dominant signal, with view/patch activity and state
+    nudging the order toward high-value, high-friction skills.
+    """
+    use_count = int(data.get("use_count", 0) or 0)
+    view_count = int(data.get("view_count", 0) or 0)
+    patch_count = int(data.get("patch_count", 0) or 0)
+
+    score = (use_count * 100) + (view_count * 20) + (patch_count * 35)
+
+    if data.get("pinned"):
+        score += 75
+
+    state = data.get("state", "active")
+    if state == "stale":
+        score += 60
+    elif state == "untracked":
+        score += 10
+    elif state == "archived":
+        score -= 1000
+
+    last_seen = _parse_timestamp(data.get("last_used_at")) or _parse_timestamp(data.get("last_viewed_at"))
+    if last_seen:
+        age_days = max((now - last_seen).total_seconds() / 86400, 0)
+        score += int(max(0, 30 - min(age_days, 30)) * 2)
+
+    return score
+
+
 def _skill_exists(skill_name: str) -> bool:
     """Check if a skill directory exists across all known skill locations."""
     # Check primary skills dir
@@ -144,6 +207,28 @@ def get_status() -> dict:
                 last_run = run_data
             except (json.JSONDecodeError, OSError, IndexError):
                 last_run = {"timestamp": dirs[-1].name}
+
+    # Improvement leaderboard — prioritize the skills that get used the most
+    # and are also showing signs of friction (patches/stale/pinned).
+    top_to_improve = []
+    for skill_name, data in usage.items():
+        if data.get("state") == "archived":
+            continue
+
+        top_to_improve.append({
+            "name": skill_name,
+            "state": data.get("state", "active"),
+            "pinned": data.get("pinned", False),
+            "use_count": data.get("use_count", 0),
+            "view_count": data.get("view_count", 0),
+            "patch_count": data.get("patch_count", 0),
+            "last_used": data.get("last_used_at") or data.get("last_viewed_at"),
+            "priority_score": _priority_score(data, now),
+            "priority_reasons": _priority_reasons(data),
+        })
+
+    top_to_improve.sort(key=lambda x: x["priority_score"], reverse=True)
+    top_to_improve = top_to_improve[:5]
     
     return {
         "status": "ok",
@@ -158,6 +243,7 @@ def get_status() -> dict:
         },
         "pinned_skills": pinned,
         "least_recently_used": lru,
+        "top_skills_to_improve": top_to_improve,
     }
 
 
@@ -180,6 +266,8 @@ def get_skills_usage() -> list[dict]:
             "created_at": data.get("created_at"),
             "archived_at": data.get("archived_at"),
             "agent_created": _is_agent_created(skill_name),
+            "priority_score": _priority_score(data, datetime.now(timezone.utc)),
+            "priority_reasons": _priority_reasons(data),
         })
     
     # Sort by use_count descending
@@ -508,5 +596,63 @@ def get_all_skills_with_usage() -> list[dict]:
                 "created_at": u.get("created_at"),
             }
         })
-    
+
     return results
+
+
+# ── Skill Improvement Pipeline ─────────────────────────────────────
+
+def audit_skill(skill_name: str) -> dict:
+    """Audit a skill against perfect skill model.
+
+    Returns:
+        {
+            "status": "ok|error",
+            "skill_name": str,
+            "audit": {...},
+        }
+    """
+    from backend.curator_auditor import SkillAuditor
+
+    auditor = SkillAuditor()
+    skill_path = _find_skill_path(skill_name)
+
+    if not skill_path:
+        return {
+            "status": "error",
+            "message": f"Skill '{skill_name}' not found",
+        }
+
+    audit = auditor.audit(skill_path)
+    return {
+        "status": "ok",
+        "skill_name": skill_name,
+        "audit": auditor._audit_to_dict(audit),
+    }
+
+
+def propose_skill_improvement(skill_name: str) -> dict:
+    """Generate improvement proposal for a skill.
+
+    Returns proposal with audit, issues, and improvement prompt.
+    """
+    from backend.curator_improver import SkillImprover
+
+    improver = SkillImprover()
+    return improver.generate_proposal(skill_name)
+
+
+def _find_skill_path(skill_name: str) -> Optional[Path]:
+    """Find skill SKILL.md file by name across all known locations."""
+    search_dirs = [
+        Path.home() / ".claude" / "skills",
+        Path.home() / ".hermes" / "skills",
+        SKILLS_DIR,
+    ]
+
+    for skill_dir in search_dirs:
+        skill_path = skill_dir / skill_name / "SKILL.md"
+        if skill_path.exists():
+            return skill_path
+
+    return None

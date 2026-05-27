@@ -392,6 +392,17 @@ export interface CuratorStatus {
     use_count: number;
     view_count: number;
   }>;
+  top_skills_to_improve: Array<{
+    name: string;
+    state: "active" | "stale" | "archived" | "untracked";
+    pinned: boolean;
+    use_count: number;
+    view_count: number;
+    patch_count: number;
+    last_used: string | null;
+    priority_score: number;
+    priority_reasons: string[];
+  }>;
 }
 
 export interface CuratorSkillUsage {
@@ -407,6 +418,8 @@ export interface CuratorSkillUsage {
   created_at: string | null;
   archived_at: string | null;
   agent_created: boolean;
+  priority_score: number;
+  priority_reasons: string[];
 }
 
 export interface CuratorReport {

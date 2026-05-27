@@ -1522,6 +1522,20 @@ async def curator_record_usage(data: dict):
     return record_use(skill, action)
 
 
+@app.get("/api/curator/audit/{skill_name:path}")
+async def curator_audit(skill_name: str):
+    """Audit a skill against perfect skill model."""
+    from .curator import audit_skill
+    return audit_skill(skill_name)
+
+
+@app.get("/api/curator/improve/{skill_name:path}")
+async def curator_improve_proposal(skill_name: str):
+    """Generate improvement proposal for a skill."""
+    from .curator import propose_skill_improvement
+    return propose_skill_improvement(skill_name)
+
+
 # ═══════════════════════════════════════════════════════════════════════
 # CANONICAL RUN ENDPOINTS — Phase 4 (SQLite Storage + Cross-Agent Queries)
 # ═══════════════════════════════════════════════════════════════════════
