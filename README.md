@@ -5,7 +5,8 @@
   <p><em>Agent-agnostic evolution platform for AI coding agents.</em></p>
 </div>
 
-> **La posta:** Genoma es un laboratorio de mejora continua para agents. Funciona, te da data concreta, y si le metés modelos grosos (Claude Sonnet 4, GPT-4o) las evoluciones son genuinamente útiles. Pero está en esa etapa incómoda donde ya hace cosas copadas pero todavía no es "instalá y olvidate".
+> **La posta:** Genoma es un laboratorio de mejora continua para agents. Funciona, te da data concreta, y si le metés modelos grosos
+ las evoluciones son genuinamente útiles. Pero está en esa etapa incómoda donde ya hace cosas copadas pero todavía no es "instalá y olvidate".
 
 ---
 
