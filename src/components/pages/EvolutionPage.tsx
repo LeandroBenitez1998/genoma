@@ -28,11 +28,6 @@ import {
 } from "lucide-react";
 import {
   fetchEvolutionRuns,
-  fetchSkills,
-  fetchJobs,
-  fetchJobLogs,
-  startEvolution,
-  cancelJob,
   fetchSkillDiff,
   checkHealth,
   isApiError,
@@ -42,6 +37,8 @@ import {
   type SkillInfo,
   type EvolutionJob,
 } from "@/lib/api";
+import { useSkills } from "@/hooks/useSkills";
+import { useJobs, useJobLogs, useStartEvolution, useCancelJob } from "@/hooks/useJobs";
 import { ElectricBorder, ShinyText, SpotlightCard, ClickSpark } from "@/components/bits";
 import DarkSelect from "@/components/bits/DarkSelect";
 import SkillDiffViewer from "@/components/SkillDiffViewer";
@@ -112,23 +109,14 @@ function ActiveJobCard({
   const [expanded, setExpanded] = useState(true);
   const [logs, setLogs] = useState<string[]>(job.logs || []);
   const logsRef = useRef<HTMLDivElement>(null);
-  const logIndex = useRef(logs.length);
+  const [logSince, setLogSince] = useState((job.logs || []).length);
+  const { data: logData } = useJobLogs(job.id, logSince);
 
   useEffect(() => {
-    if (job.status === "completed" || job.status === "failed") return;
-
-    const interval = setInterval(async () => {
-      try {
-        const data = await fetchJobLogs(job.id, logIndex.current);
-        if (data.logs?.length) {
-          setLogs((prev) => [...prev, ...data.logs]);
-          logIndex.current = data.total_lines;
-        }
-      } catch {}
-    }, 1500);
-
-    return () => clearInterval(interval);
-  }, [job.id, job.status]);
+    if (!logData?.logs?.length) return;
+    setLogs((prev) => [...prev, ...logData.logs]);
+    setLogSince(logData.total_lines);
+  }, [logData]);
 
   useEffect(() => {
     if (logsRef.current) logsRef.current.scrollTop = logsRef.current.scrollHeight;
@@ -281,8 +269,10 @@ function DisconnectedBanner({ onRetry }: { onRetry: () => void }) {
 // ── Main Page ─────────────────────────────────────────────────────────
 export default function EvolutionPage() {
   const [runs, setRuns] = useState<EvolutionRun[]>([]);
-  const [skills, setSkills] = useState<SkillInfo[]>([]);
-  const [activeJobs, setActiveJobs] = useState<EvolutionJob[]>([]);
+  const { data: skills = [], isLoading: skillsLoading } = useSkills();
+  const { data: activeJobs = [], isLoading: jobsLoading } = useJobs(true);
+  const startEvolutionMutation = useStartEvolution();
+  const cancelJobMutation = useCancelJob();
   const [selectedSkill, setSelectedSkill] = useState("");
   const [iterations, setIterations] = useState(3);
   const [launching, setLaunching] = useState(false);
@@ -323,25 +313,15 @@ export default function EvolutionPage() {
     }
 
     try {
-      const [r, s, j, ep] = await Promise.all([
+      const [runsData, evolvableData] = await Promise.all([
         fetchEvolutionRuns().catch((e) => {
           if (isApiError(e)) setConnectionError(`${e.kind}: ${e.message}`);
           return [] as EvolutionRun[];
         }),
-        fetchSkills().catch((e) => {
-          if (isApiError(e)) setConnectionError(`${e.kind}: ${e.message}`);
-          return [] as SkillInfo[];
-        }),
-        fetchJobs(true).catch((e) => {
-          if (isApiError(e)) setConnectionError(`${e.kind}: ${e.message}`);
-          return [] as EvolutionJob[];
-        }),
         api<{ status: string; providers: EvolvableProvider[] }>("/api/evolution/evolvable").catch(() => ({ status: "ok", providers: [] as EvolvableProvider[] })),
       ]);
-      setRuns(r);
-      setSkills(s);
-      setActiveJobs(j);
-      setEvolvableProviders(ep.providers || []);
+      setRuns(runsData);
+      setEvolvableProviders(evolvableData.providers || []);
     } catch (e) {
       if (e instanceof Error) setConnectionError(e.message);
     }
@@ -352,15 +332,6 @@ export default function EvolutionPage() {
   useEffect(() => {
     loadData();
   }, [loadData]);
-
-  // Poll active jobs
-  useEffect(() => {
-    if (connection !== "connected") return;
-    const interval = setInterval(() => {
-      fetchJobs(true).then(setActiveJobs).catch(() => {});
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [connection]);
 
   const handleStart = async () => {
     if (!selectedSkill) {
@@ -376,19 +347,19 @@ export default function EvolutionPage() {
     setLaunchError("");
 
     try {
-      const result = await startEvolution(selectedSkill, iterations);
+      const result = await startEvolutionMutation.mutateAsync({
+        skillName: selectedSkill,
+        iterations,
+      });
 
       if (result.error) {
         setLaunchError(result.error);
       } else {
-        const jobs = await fetchJobs(true);
-        setActiveJobs(jobs);
         setSelectedSkill("");
       }
     } catch (e: unknown) {
       if (isApiError(e)) {
         setLaunchError(`${e.kind}: ${e.message}`);
-        // Circuit breaker: mark disconnected on network errors
         if (e.kind === "network" || e.kind === "timeout") {
           setConnection("disconnected");
         }
@@ -402,8 +373,7 @@ export default function EvolutionPage() {
 
   const handleCancel = async (jobId: string) => {
     try {
-      await cancelJob(jobId);
-      setActiveJobs((prev) => prev.filter((j) => j.id !== jobId));
+      await cancelJobMutation.mutateAsync(jobId);
     } catch {}
   };
 
@@ -501,7 +471,7 @@ export default function EvolutionPage() {
             <div className="flex flex-wrap items-end gap-4">
               <div className="flex-1 min-w-[200px]">
                 <label className="text-xs text-muted-foreground mb-1 block">Skill</label>
-                {loading || connection === "checking" ? (
+                {loading || skillsLoading || connection === "checking" ? (
                   <div className="px-4 py-2.5 rounded-xl bg-[#1a1a1a] border border-white/[0.08] text-sm text-muted-foreground animate-pulse">
                     {connection === "checking" ? "Checking connection..." : "Loading skills..."}
                   </div>

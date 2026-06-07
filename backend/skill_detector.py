@@ -37,12 +37,12 @@ class SkillDetector:
         "opencode": Path.home() / ".opencode" / "skills",
         "kilocode": Path.home() / ".kilocode" / "skills",
         "antigravity": Path.home() / ".antigravity" / "providers",
-        "hermes": Path.home() / ".hermes" / "skills",
-        "agency": Path.home() / ".hermes" / "hermes-agent" / "skills" / "agency",
+        "hermes": Path.home() / ".genoma" / "skills",
+        "agency": Path.home() / ".genoma" / "hermes-agent" / "skills" / "agency",
     }
     
     def __init__(self, config_path: Optional[Path] = None):
-        self.config_path = config_path or (Path.home() / ".hermes" / "memory" / "skills_config.json")
+        self.config_path = config_path or (Path.home() / ".genoma" / "memory" / "skills_config.json")
         self.enabled_skills = self._load_enabled()
     
     def _load_enabled(self) -> Dict[str, bool]:

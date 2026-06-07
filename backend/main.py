@@ -17,15 +17,16 @@ from typing import Optional
 
 from dotenv import dotenv_values
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import Depends, FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from .core.paths import validate_slug, validate_skill_path
 from .skill_registry import get_registry
 from .job_tracker import tracker, EvolutionJob, JobStatus
 
 # ── Paths ──────────────────────────────────────────────────────────
-HERMES_REPO = Path(os.environ.get("HERMES_AGENT_REPO", Path.home() / ".hermes" / "hermes-agent"))
+HERMES_REPO = Path(os.environ.get("HERMES_AGENT_REPO", Path.home() / ".genoma" / "hermes-agent"))
 
 # Evolution dir: env var > sibling > home
 _env_ev = os.environ.get("EVOLUTION_DIR", "")
@@ -33,12 +34,12 @@ if _env_ev:
     EVOLUTION_DIR = Path(_env_ev)
 else:
     _sibling = Path(__file__).parent.parent.parent / "hermes-agent-self-evolution"
-    _home = Path.home() / ".hermes" / "hermes-agent-self-evolution"
+    _home = Path.home() / ".genoma" / "hermes-agent-self-evolution"
     EVOLUTION_DIR = _home if _home.exists() else _sibling
 
 SKILLS_DIR = HERMES_REPO / "skills"
-MEMORY_DIR = Path.home() / ".hermes" / "memory"
-DATASETS_DIR = Path.home() / ".hermes" / "datasets"
+MEMORY_DIR = Path.home() / ".genoma" / "memory"
+DATASETS_DIR = Path.home() / ".genoma" / "datasets"
 
 # ── Skill Registry (lazy loaded) ────────────────────────────────
 _skill_registry = None
@@ -49,7 +50,7 @@ def get_skill_registry():
         _skill_registry = get_registry()
     return _skill_registry
 
-SESSIONS_DIR = Path.home() / ".hermes" / "sessions"
+SESSIONS_DIR = Path.home() / ".genoma" / "sessions"
 
 # ── Python executable ──────────────────────────────────────────────
 def _find_python() -> str:
@@ -85,6 +86,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Session auth (simple token) ────────────────────────────────────
+from .core.security import resolve_session_token, require_session_token
+
+@app.get("/api/auth/token")
+async def auth_token():
+    return {"token": resolve_session_token()}
 
 # ── WebSocket manager ──────────────────────────────────────────────
 
@@ -260,7 +268,7 @@ async def refresh_skills():
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/skills/toggle")
-async def toggle_skill(request: ToggleSkillRequest):
+async def toggle_skill(request: ToggleSkillRequest, _token: str = Depends(require_session_token)):
     """Activa o desactiva una skill"""
     try:
         get_skill_registry().toggle_provider_skill(request.provider, request.skill_name, request.enabled)
@@ -269,7 +277,7 @@ async def toggle_skill(request: ToggleSkillRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/api/skills/global/{skill_name}")
-async def delete_global_skill(skill_name: str):
+async def delete_global_skill(skill_name: str, _token: str = Depends(require_session_token)):
     """Elimina una skill GLOBALMENTE (de global_skills/ y todos los symlinks)."""
     try:
         registry = get_registry()
@@ -314,7 +322,7 @@ async def delete_global_skill(skill_name: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/api/skills/{provider}/{skill_name}")
-async def delete_skill(provider: str, skill_name: str):
+async def delete_skill(provider: str, skill_name: str, _token: str = Depends(require_session_token)):
     """Elimina una skill de un provider específico (desenlaza, pero preserva la skill global)."""
     try:
         registry = get_registry()
@@ -341,6 +349,7 @@ async def delete_skill(provider: str, skill_name: str):
 @app.get("/api/skills/{skill_name}")
 async def get_skill(skill_name: str):
     """Get full skill content + metadata."""
+    validate_slug(skill_name)
     skill_file = _find_skill_file(skill_name)
     if not skill_file:
         raise HTTPException(404, f"Skill '{skill_name}' not found")
@@ -438,6 +447,7 @@ async def list_evolution_runs():
 @app.get("/api/skills/{skill_name}/evolution-history")
 async def skill_history(skill_name: str):
     """Get evolution run history for a skill."""
+    validate_slug(skill_name)
     output_dir = EVOLUTION_DIR / "output" / skill_name
     runs = []
 
@@ -475,6 +485,8 @@ async def skill_history(skill_name: str):
 @app.get("/api/skills/{skill_name}/evolution/{run_dir}/diff")
 async def skill_diff(skill_name: str, run_dir: str):
     """Get baseline vs evolved skill content for a specific run."""
+    validate_slug(skill_name)
+    validate_slug(run_dir, "run_dir")
     skill_path = EVOLUTION_DIR / "output" / skill_name
 
     # Support "latest" keyword
@@ -489,6 +501,7 @@ async def skill_diff(skill_name: str, run_dir: str):
         if not runs:
             raise HTTPException(404, f"No evolution runs found for skill '{skill_name}'")
         run_path = runs[0]
+        run_dir = run_path.name
     else:
         run_path = skill_path / run_dir
 
@@ -521,7 +534,7 @@ async def skill_diff(skill_name: str, run_dir: str):
 
 
 @app.post("/api/evolution/validate")
-async def validate_evolution_endpoint(skill_name: str):
+async def validate_evolution_endpoint(skill_name: str, _token: str = Depends(require_session_token)):
     """Validate latest evolution with LLM Judge + holdout dataset."""
     import subprocess as sp
 
@@ -551,6 +564,7 @@ async def validate_evolution_endpoint(skill_name: str):
 @app.get("/api/evolution/validate/{skill_name}")
 async def get_validation_report(skill_name: str):
     """Get latest validation report for a skill."""
+    validate_slug(skill_name)
     output_dir = EVOLUTION_DIR / "output" / skill_name
     if not output_dir.exists():
         raise HTTPException(404, f"No evolution output for '{skill_name}'")
@@ -564,7 +578,7 @@ async def get_validation_report(skill_name: str):
 
 
 @app.post("/api/evolution/start")
-async def start_evolution(req: EvolveRequest):
+async def start_evolution(req: EvolveRequest, _token: str = Depends(require_session_token)):
     """Start an evolution run with full job tracking."""
 
     # Check for existing active jobs for this skill
@@ -605,7 +619,7 @@ async def start_evolution(req: EvolveRequest):
         except Exception:
             return False
 
-    _dotenv = dotenv_values(str(Path.home() / ".hermes" / ".env"))
+    _dotenv = dotenv_values(str(Path.home() / ".genoma" / ".env"))
     for key in ("OLLAMA_API_BASE", "SDD_OLLAMA_MODEL", "SDD_EVOLVE_MODEL"):
         if key in os.environ:
             env[key] = os.environ[key]
@@ -773,7 +787,7 @@ async def get_job_logs(job_id: str, since: int = 0):
     }
 
 @app.delete("/api/jobs/{job_id}")
-async def cancel_job(job_id: str):
+async def cancel_job(job_id: str, _token: str = Depends(require_session_token)):
     """Cancel a running evolution job."""
     job = tracker.get_job(job_id)
     if not job:
@@ -804,6 +818,8 @@ async def cancel_job(job_id: str):
 @app.get("/api/evolution/{skill_name}/output/{run_id}")
 async def get_run_output(skill_name: str, run_id: str):
     """Get evolved vs baseline skill diff for a specific run."""
+    validate_slug(skill_name)
+    validate_slug(run_id, "run_id")
     run_dir = EVOLUTION_DIR / "output" / skill_name / run_id
 
     if not run_dir.exists():
@@ -854,6 +870,7 @@ async def list_datasets():
 @app.get("/api/datasets/{skill_name}")
 async def get_dataset(skill_name: str):
     """Get dataset examples for a skill."""
+    validate_slug(skill_name)
     for base in [DATASETS_DIR, EVOLUTION_DIR / "datasets", EVOLUTION_DIR / "output"]:
         dataset_dir = base / skill_name
         if dataset_dir.exists():
@@ -875,6 +892,7 @@ async def get_dataset(skill_name: str):
 @app.get("/api/datasets/{skill_name}/sessions")
 async def import_sessions(skill_name: str, source: str = "all", max_examples: int = 50):
     """Import and filter external sessions for dataset building."""
+    validate_slug(skill_name)
     cmd = [
         PYTHON_BIN, "-m", "evolution.core.external_importers",
         "--source", source,
@@ -919,7 +937,7 @@ async def list_memory():
                 })
 
     # Also check SOUL.md memory section
-    soul_path = Path.home() / ".hermes" / "SOUL.md"
+    soul_path = Path.home() / ".genoma" / "SOUL.md"
     if soul_path.exists():
         content = soul_path.read_text(encoding="utf-8", errors="replace")
         if "MEMORY" in content:
@@ -1090,7 +1108,7 @@ async def get_graph():
                 pass
 
     # ── 4. SOUL.md as hub node ────────────────────────────────────
-    soul_path = Path.home() / ".hermes" / "SOUL.md"
+    soul_path = Path.home() / ".genoma" / "SOUL.md"
     if soul_path.exists():
         soul_id = "soul:SOUL.md"
         nodes[soul_id] = {
@@ -1195,6 +1213,7 @@ async def get_metrics():
 @app.get("/api/constraints/validate/{skill_name}")
 async def validate_skill(skill_name: str):
     """Validate a skill against all constraints."""
+    validate_slug(skill_name)
     skill_file = _find_skill_file(skill_name)
     if not skill_file:
         raise HTTPException(404, f"Skill '{skill_name}' not found")
@@ -1308,7 +1327,7 @@ from .promethean.cycle_orchestrator import get_orchestrator
 
 
 @app.post("/api/promethean/traces")
-async def ingest_trace(trace: dict):
+async def ingest_trace(trace: dict, _token: str = Depends(require_session_token)):
     """① PERCIBE: Ingest a standardized trace from any AI agent."""
     ingestor = get_ingestor()
     try:
@@ -1320,7 +1339,7 @@ async def ingest_trace(trace: dict):
 
 
 @app.post("/api/promethean/traces/batch")
-async def ingest_traces_batch(traces: list[dict]):
+async def ingest_traces_batch(traces: list[dict], _token: str = Depends(require_session_token)):
     """① PERCIBE: Ingest multiple traces at once."""
     ingestor = get_ingestor()
     try:
@@ -1357,6 +1376,7 @@ async def diagnose_gaps(days: int = 7, min_occurrences: int = 3):
 
 @app.post("/api/promethean/cycle/start")
 async def start_promethean_cycle(
+    _token: str = Depends(require_session_token),
     min_anomaly_occurrences: int = 3,
     anomaly_days: int = 7,
     auto_deploy: bool = False,  # Safety: default to dry-run
@@ -1402,7 +1422,7 @@ async def get_deployments(limit: int = 20):
 
 
 @app.post("/api/promethean/perceive")
-async def run_perceive(days: int = 7, min_occurrences: int = 3):
+async def run_perceive(days: int = 7, min_occurrences: int = 3, _token: str = Depends(require_session_token)):
     """Run only the PERCIBE phase (for debugging/testing)."""
     orchestrator = get_orchestrator(PYTHON_BIN)
     return orchestrator.run_perceive(days=days, min_occ=min_occurrences)
@@ -1434,10 +1454,14 @@ async def curator_skills():
 
 
 @app.post("/api/curator/pin/{skill_name:path}")
-async def curator_pin(skill_name: str):
+async def curator_pin(skill_name: str, _token: str = Depends(require_session_token)):
     """Pin a skill to protect it from curator auto-transitions."""
     if not CURATOR_ENABLED:
         raise HTTPException(status_code=503, detail="Curator is disabled")
+    try:
+        validate_skill_path(skill_name, "skill_name")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     from .curator import pin_skill
     result = pin_skill(skill_name)
     if result.get("status") == "error":
@@ -1446,10 +1470,14 @@ async def curator_pin(skill_name: str):
 
 
 @app.post("/api/curator/unpin/{skill_name:path}")
-async def curator_unpin(skill_name: str):
+async def curator_unpin(skill_name: str, _token: str = Depends(require_session_token)):
     """Unpin a skill to allow curator transitions."""
     if not CURATOR_ENABLED:
         raise HTTPException(status_code=503, detail="Curator is disabled")
+    try:
+        validate_skill_path(skill_name, "skill_name")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     from .curator import unpin_skill
     result = unpin_skill(skill_name)
     if result.get("status") == "error":
@@ -1458,10 +1486,14 @@ async def curator_unpin(skill_name: str):
 
 
 @app.post("/api/curator/restore/{skill_name:path}")
-async def curator_restore(skill_name: str):
+async def curator_restore(skill_name: str, _token: str = Depends(require_session_token)):
     """Restore an archived skill back to active."""
     if not CURATOR_ENABLED:
         raise HTTPException(status_code=503, detail="Curator is disabled")
+    try:
+        validate_skill_path(skill_name, "skill_name")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     from .curator import restore_skill
     result = restore_skill(skill_name)
     if result.get("status") == "error":
@@ -1470,7 +1502,7 @@ async def curator_restore(skill_name: str):
 
 
 @app.post("/api/curator/run")
-async def curator_run(sync: bool = False):
+async def curator_run(sync: bool = False, _token: str = Depends(require_session_token)):
     """Trigger a curator review pass."""
     if not CURATOR_ENABLED:
         raise HTTPException(status_code=503, detail="Curator is disabled")
@@ -1505,7 +1537,7 @@ async def curator_report_detail(report_id: str):
 # ── Record usage (called by other parts of the dashboard) ──────────
 
 @app.post("/api/curator/record-use")
-async def curator_record_usage(data: dict):
+async def curator_record_usage(data: dict, _token: str = Depends(require_session_token)):
     """Record a skill usage/view/patch event.
     
     Body: {"skill": "skill-name", "action": "use"|"view"|"patch"}
@@ -1525,6 +1557,10 @@ async def curator_record_usage(data: dict):
 @app.get("/api/curator/audit/{skill_name:path}")
 async def curator_audit(skill_name: str):
     """Audit a skill against perfect skill model."""
+    try:
+        validate_skill_path(skill_name, "skill_name")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     from .curator import audit_skill
     return audit_skill(skill_name)
 
@@ -1532,13 +1568,21 @@ async def curator_audit(skill_name: str):
 @app.get("/api/curator/improve/{skill_name:path}")
 async def curator_improve_proposal(skill_name: str):
     """Generate improvement proposal for a skill."""
+    try:
+        validate_skill_path(skill_name, "skill_name")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     from .curator import propose_skill_improvement
     return propose_skill_improvement(skill_name)
 
 
 @app.post("/api/curator/evolve/{skill_name:path}")
-async def curator_evolve_skill(skill_name: str, dry_run: bool = False):
+async def curator_evolve_skill(skill_name: str, dry_run: bool = False, _token: str = Depends(require_session_token)):
     """Trigger skill evolution (auto-improvement) via SDD pipeline."""
+    try:
+        validate_skill_path(skill_name, "skill_name")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     from .skill_evolver import SkillEvolver
     evolver = SkillEvolver()
     return evolver.evolve_skill(skill_name, dry_run=dry_run)
@@ -1600,6 +1644,7 @@ async def get_agent_summary():
 
 @app.post("/api/runs/migrate")
 async def migrate_runs_from_flat_files(
+    _token: str = Depends(require_session_token),
     project_path: Optional[str] = None,
     limit: int = 100,
 ):
@@ -1633,7 +1678,7 @@ async def migrate_runs_from_flat_files(
 
 
 @app.post("/api/runs/{run_id}/evaluate")
-async def evaluate_run(run_id: str):
+async def evaluate_run(run_id: str, _token: str = Depends(require_session_token)):
     """Run evaluation engine on a canonical run. Returns list of scores."""
     from .eval.engine import EvaluationEngine
 
@@ -1676,7 +1721,7 @@ async def get_run_scores(run_id: str):
 
 
 @app.post("/api/runs/compare")
-async def compare_runs(baseline_run_id: str, evolved_run_id: str, threshold: float = 0.05):
+async def compare_runs(baseline_run_id: str, evolved_run_id: str, threshold: float = 0.05, _token: str = Depends(require_session_token)):
     """Compare baseline and evolved runs for regression detection."""
     from .eval.engine import EvaluationEngine
 
@@ -1734,7 +1779,7 @@ async def list_skills():
 # ═══════════════════════════════════════════════════════════════════════
 
 @app.post("/api/skills/{skill_name}/evolve")
-async def evolve_skill_endpoint(skill_name: str, iterations: int = 3):
+async def evolve_skill_endpoint(skill_name: str, iterations: int = 3, _token: str = Depends(require_session_token)):
     """Evolve a skill using SDD optimizer. Returns metrics."""
     try:
         from .sdd_evolve import evolve_skill
@@ -1743,7 +1788,7 @@ async def evolve_skill_endpoint(skill_name: str, iterations: int = 3):
         evolve_skill(skill_name=skill_name, iterations=iterations)
 
         # Read results from output directory
-        output_dir = Path.home() / ".hermes" / "hermes-agent-self-evolution" / "output" / skill_name
+        output_dir = Path.home() / ".genoma" / "hermes-agent-self-evolution" / "output" / skill_name
         runs = sorted(output_dir.glob("*/"), reverse=True) if output_dir.exists() else []
 
         if not runs:

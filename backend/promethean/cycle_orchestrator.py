@@ -26,7 +26,7 @@ from .dspy_compiler import get_compiler
 from .delta_validator import get_validator
 from .skill_deployer import get_deployer
 
-CYCLES_DIR = Path.home() / ".hermes" / "traces" / "cycles"
+CYCLES_DIR = Path.home() / ".genoma" / "traces" / "cycles"
 
 
 class PrometheanOrchestrator:

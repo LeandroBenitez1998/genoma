@@ -164,6 +164,7 @@ class MetricSnapshot:
     dataset_size: int
     holdout_size: int
     evaluated_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    karpathy: Optional[dict] = None
 
 
 # ── Canonical Run Schema (Agent-Agnostic Telemetry) ───────────────────

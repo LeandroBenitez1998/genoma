@@ -15,7 +15,7 @@ from typing import Optional
 
 from .models import SkillGenesisPacket, CompilationResult, MetricSnapshot
 
-SKILLS_DIR = Path.home() / ".hermes" / "skills"
+SKILLS_DIR = Path.home() / ".genoma" / "skills"
 
 
 class SkillDeployer:
@@ -23,7 +23,7 @@ class SkillDeployer:
 
     def __init__(self):
         SKILLS_DIR.mkdir(parents=True, exist_ok=True)
-        self.deployment_log = Path.home() / ".hermes" / "traces" / "deployments.jsonl"
+        self.deployment_log = Path.home() / ".genoma" / "traces" / "deployments.jsonl"
 
     # ── Deploy ──────────────────────────────────────────────────────
     def deploy(

@@ -9,13 +9,16 @@
 
 // ── Env resolution ───────────────────────────────────────────────────
 function resolveBase(): string {
-  // Hardcoded to FastAPI backend — single origin, no build-time env needed
-  return "http://localhost:8000";
+  if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_BASE) {
+    return process.env.NEXT_PUBLIC_API_BASE;
+  }
+  // Relative URL → same origin (vinext proxy handles /api/*)
+  return "";
 }
 
 const API_BASE = resolveBase();
 
-// URL absoluta del backend (para token fetch y WebSocket)
+// URL absoluta del backend (para WebSocket)
 const HERMES_SERVER = API_BASE || "http://127.0.0.1:8000";
 
 // ── Session token (Hermes auth) ──────────────────────────────────────
@@ -24,7 +27,7 @@ let _tokenPromise: Promise<string | null> | null = null;
 
 async function fetchSessionToken(): Promise<string | null> {
   try {
-    const res = await fetch("/api/auth/token", {
+    const res = await fetch(`${API_BASE || ""}/api/auth/token`, {
       signal: AbortSignal.timeout(5_000),
     });
     if (!res.ok) return null;
@@ -155,6 +158,7 @@ export async function api<T>(path: string, options?: ApiOptions): Promise<T> {
 
 // ── WebSocket helper ─────────────────────────────────────────────────
 let _wsToken: string | null = null;
+let _reconnectAttempt = 0;
 
 export async function wsConnect(onMessage: (data: unknown) => void): Promise<WebSocket> {
   // Lazy-load token
@@ -166,6 +170,7 @@ export async function wsConnect(onMessage: (data: unknown) => void): Promise<Web
   const ws = new WebSocket(wsUrl);
 
   ws.onmessage = (event) => {
+    _reconnectAttempt = 0; // reset on successful message
     try {
       onMessage(JSON.parse(event.data));
     } catch {
@@ -174,8 +179,10 @@ export async function wsConnect(onMessage: (data: unknown) => void): Promise<Web
   };
 
   ws.onclose = () => {
-    // Auto-reconnect after 3s
-    setTimeout(() => wsConnect(onMessage), 3000);
+    // Exponential backoff: 1s, 2s, 4s, 8s, … capped at 30s
+    const delay = Math.min(1000 * Math.pow(2, _reconnectAttempt), 30000);
+    _reconnectAttempt++;
+    setTimeout(() => wsConnect(onMessage), delay);
   };
 
   return ws;

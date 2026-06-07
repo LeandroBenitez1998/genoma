@@ -16,7 +16,7 @@ from typing import Optional
 
 from .models import TraceRecord
 
-TRACES_DIR = Path.home() / ".hermes" / "traces"
+TRACES_DIR = Path.home() / ".genoma" / "traces"
 INGESTED_DIR = TRACES_DIR / "ingested"
 PROCESSED_DIR = TRACES_DIR / "processed"
 

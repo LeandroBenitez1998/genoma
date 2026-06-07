@@ -9,6 +9,7 @@ from backend.eval.scorers import (
     TokenCostScorer,
     ErrorRecoveryScorer,
     DeltaScorer,
+    KarpathyComplianceScorer,
 )
 from backend.promethean.models import CanonicalRun
 from backend.storage import RunStore
@@ -23,6 +24,7 @@ class EvaluationEngine:
         TokenCostScorer(),
         ErrorRecoveryScorer(),
         DeltaScorer(),
+        KarpathyComplianceScorer(),
     ]
 
     def __init__(self, store: Optional[RunStore] = None, scorers: Optional[list] = None):

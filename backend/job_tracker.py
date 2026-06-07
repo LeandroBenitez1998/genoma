@@ -10,7 +10,7 @@ from pathlib import Path
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
-LOG_DIR = Path.home() / ".hermes" / "evolution-logs"
+LOG_DIR = Path.home() / ".genoma" / "evolution-logs"
 
 
 class JobStatus(str, Enum):

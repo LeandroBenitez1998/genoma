@@ -53,7 +53,7 @@ find_python() {
 find_hermes() {
     local candidates=(
         "${HERMES_AGENT_REPO:-}"
-        "$HOME/.hermes/hermes-agent"
+        "$HOME/.genoma/hermes-agent"
         "$HOME/.local/share/hermes/hermes-agent"
         "/usr/local/share/hermes/hermes-agent"
         "$DASHBOARD_DIR/../hermes-agent"
@@ -66,14 +66,14 @@ find_hermes() {
             return 0
         fi
     done
-    err "hermes-agent not found. Set HERMES_AGENT_REPO or install to ~/.hermes/hermes-agent"
+    err "hermes-agent not found. Set HERMES_AGENT_REPO or install to ~/.genoma/hermes-agent"
     exit 1
 }
 
 # ── Find hermes-agent-self-evolution ────────────────────────────────
 find_evolution() {
     local candidates=(
-        "$HOME/.hermes/hermes-agent-self-evolution"
+        "$HOME/.genoma/hermes-agent-self-evolution"
         "$DASHBOARD_DIR/../hermes-agent-self-evolution"
         "$HOME/dev/hermes-agent-self-evolution"
     )
@@ -173,8 +173,8 @@ echo ""
 # Start backend
 echo "▸ Starting backend (port 8787)..."
 source "$DIR/backend/venv/bin/activate"
-export HERMES_AGENT_REPO="${HERMES_AGENT_REPO:-$HOME/.hermes/hermes-agent}"
-export PYTHONPATH="${EVOLUTION_DIR:-$HOME/.hermes/hermes-agent-self-evolution}"
+export HERMES_AGENT_REPO="${HERMES_AGENT_REPO:-$HOME/.genoma/hermes-agent}"
+export PYTHONPATH="${EVOLUTION_DIR:-$HOME/.genoma/hermes-agent-self-evolution}"
 uvicorn backend.main:app --host 0.0.0.0 --port 8787 &
 BACKEND_PID=$!
 

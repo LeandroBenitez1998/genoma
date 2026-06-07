@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { prepare } from "@chenglou/pretext"
 import {
@@ -16,7 +16,9 @@ import {
   Zap,
   ArrowUpRight,
 } from "lucide-react"
-import { fetchHealth, fetchMetrics, type MetricsData, type EvolutionRun } from "@/lib/api"
+import { useHealth } from "@/hooks/useHealth"
+import { useMetrics } from "@/hooks/useMetrics"
+import type { EvolutionRun } from "@/lib/api"
 import { CountUp, SpotlightCard } from "@/components/bits"
 import { cn } from "@/lib/utils"
 
@@ -240,24 +242,16 @@ function RunRow({
 // ═══════════════════════════════════════════════════════════════════
 
 export default function OverviewPage() {
-  const [health, setHealth] = useState<{
+  const healthQuery = useHealth()
+  const { data: metrics, isLoading: metricsLoading } = useMetrics()
+  const [expandedRun, setExpandedRun] = useState<number | null>(null)
+
+  const health = healthQuery.data as {
     status: string
     skills_count: number
     categories: Record<string, number>
-  } | null>(null)
-  const [metrics, setMetrics] = useState<MetricsData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [expandedRun, setExpandedRun] = useState<number | null>(null)
-
-  useEffect(() => {
-    Promise.all([fetchHealth(), fetchMetrics()])
-      .then(([h, m]) => {
-        setHealth(h)
-        setMetrics(m)
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [])
+  } | null
+  const loading = healthQuery.isLoading || metricsLoading
 
   // Derive stats for the card grid
   const stats = useMemo(() => [

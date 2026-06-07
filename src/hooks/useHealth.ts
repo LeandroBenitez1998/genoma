@@ -1,0 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
+import { fetchHealth } from '@/lib/api';
+
+export function useHealth() {
+  return useQuery({
+    queryKey: ['health'],
+    queryFn: fetchHealth,
+    refetchInterval: 30_000, // poll every 30s
+    staleTime: 10_000,
+  });
+}

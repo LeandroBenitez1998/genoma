@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Sparkles, ToggleLeft, ToggleRight, Search, RefreshCw, FolderOpen, ChevronDown, ChevronRight } from "lucide-react";
-import { api } from '@/lib/api';
+import { api, fetchSkillProviders, toggleSkillEnabled } from '@/lib/api';
+import { useRefreshSkills } from "@/hooks/useSkills";
 
 interface Skill {
   name: string;
@@ -29,11 +30,12 @@ export default function SkillsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedProvider, setSelectedProvider] = useState<string>("all");
   const [visibleCounts, setVisibleCounts] = useState<Record<string, number>>({});
+  const refreshSkillsMutation = useRefreshSkills();
 
-  const fetchSkills = async () => {
+  const loadProviders = async () => {
     setLoading(true);
     try {
-      const data = await api<{status: string; providers: Provider[]}>('/api/skills/providers');
+      const data = await fetchSkillProviders();
       if (data.status === "ok") {
         setProviders(data.providers);
         const allNames = new Set(data.providers.map(p => p.name));
@@ -46,16 +48,27 @@ export default function SkillsPage() {
   };
 
   useEffect(() => {
-    fetchSkills();
+    loadProviders();
   }, []);
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      const data = await refreshSkillsMutation.mutateAsync();
+      if (data.status === "ok") {
+        setProviders(data.providers);
+        const allNames = new Set(data.providers.map(p => p.name));
+        setExpandedProviders(allNames);
+      }
+    } catch (error) {
+      console.error("Error refreshing skills:", error);
+    }
+    setLoading(false);
+  };
 
   const toggleSkill = async (provider: string, skillName: string, enabled: boolean) => {
     try {
-      await api<{status:string}>("/api/skills/toggle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ provider, skill_name: skillName, enabled }),
-      });
+      await toggleSkillEnabled(provider, skillName, enabled);
       setProviders(prev => prev.map(p => {
         if (p.name !== provider) return p;
         return {
@@ -164,8 +177,8 @@ export default function SkillsPage() {
             </div>
           </div>
           <button
-            onClick={fetchSkills}
-            disabled={loading}
+            onClick={handleRefresh}
+            disabled={loading || refreshSkillsMutation.isPending}
             className="flex items-center gap-2 px-4 py-2 bg-[var(--evo-bg-surface)] border border-gray-200 dark:border-gray-700 text-[var(--evo-text-secondary)] hover:bg-[var(--evo-bg-surface-hover)] rounded-xl transition-all shadow-[var(--evo-shadow-sm)]"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />

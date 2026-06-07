@@ -67,6 +67,25 @@
   --shadow-editorial: 0px 20px 40px rgba(28, 27, 27, 0.06);
   --shadow-card: 0px 4px 16px rgba(28, 27, 27, 0.04);
 
+  /* ── Legacy --evo-* aliases (SkillStudioPage, DatasetPage) ── */
+  --evo-bg-base: var(--genoma-background);
+  --evo-bg-surface: var(--genoma-surface);
+  --evo-bg-surface-hover: var(--genoma-surface-high);
+  --evo-text-primary: #1c1b1b;
+  --evo-text-secondary: var(--muted-foreground);
+  --evo-text-tertiary: color-mix(in srgb, var(--muted-foreground) 70%, transparent);
+  --evo-primary-50: color-mix(in srgb, var(--genoma-primary) 10%, white);
+  --evo-primary-100: color-mix(in srgb, var(--genoma-primary) 18%, white);
+  --evo-primary-200: color-mix(in srgb, var(--genoma-primary) 38%, white);
+  --evo-primary-300: color-mix(in srgb, var(--genoma-primary) 55%, white);
+  --evo-primary-500: var(--genoma-primary);
+  --evo-primary-600: color-mix(in srgb, var(--genoma-primary) 85%, black);
+  --evo-primary-700: var(--genoma-primary);
+  --evo-shadow-sm: var(--shadow-card);
+  --evo-shadow-md: var(--shadow-editorial);
+  --evo-shadow-lg: 0px 24px 48px rgba(28, 27, 27, 0.08);
+  --evo-success: var(--success);
+
   /* ── Charts ── */
   --chart-1: oklch(0.22 0.06 260);
   --chart-2: oklch(0.48 0.15 38);
@@ -118,6 +137,17 @@
   --chart-3: oklch(0.68 0.12 180);
   --chart-4: oklch(0.78 0.15 70);
   --chart-5: oklch(0.68 0.18 30);
+
+  /* ── Legacy --evo-* dark overrides ── */
+  --evo-bg-base: var(--genoma-background);
+  --evo-bg-surface: #1e293b;
+  --evo-bg-surface-hover: #334155;
+  --evo-text-primary: #f1f5f9;
+  --evo-text-secondary: #94a3b8;
+  --evo-text-tertiary: #64748b;
+  --evo-shadow-sm: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  --evo-shadow-md: 0px 8px 24px rgba(0, 0, 0, 0.25);
+  --evo-shadow-lg: 0px 24px 48px rgba(0, 0, 0, 0.3);
 }
 
 /* ── @theme inline for Tailwind v4 ── */

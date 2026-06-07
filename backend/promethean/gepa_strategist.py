@@ -17,8 +17,8 @@ from typing import Optional
 from .models import SkillGenesisPacket, CyclePhase, CycleState
 from .trace_ingestion import get_ingestor
 
-SKILLS_DIR = Path.home() / ".hermes" / "skills"
-MEMORY_DIR = Path.home() / ".hermes" / "memory"
+SKILLS_DIR = Path.home() / ".genoma" / "skills"
+MEMORY_DIR = Path.home() / ".genoma" / "memory"
 
 
 class GEPAStrategist:
@@ -168,6 +168,17 @@ class GEPAStrategist:
         }
 
         for pattern, cause in patterns.items():
+            if re.search(pattern, error_signature, re.IGNORECASE):
+                return cause
+
+        # Karpathy behavioral patterns — these come last because they're behavioral, not technical
+        karpathy_patterns = {
+            r"too.*many.*(file|change|edit|modif)|non.?surgical|shotgun.*approach": "Non-surgical change — touched too many unrelated files",
+            r"over.?engineer|overcomplic|unnecessary.*abstract|premature.*optim|gold.*plat": "Over-engineered solution — unnecessary complexity introduced",
+            r"no.*plan|rushed|missing.*(require|spec|test)|wrong.*assum|no.*verif|criteri": "Goal-driven violation — no verifiable success criteria defined",
+        }
+
+        for pattern, cause in karpathy_patterns.items():
             if re.search(pattern, error_signature, re.IGNORECASE):
                 return cause
 

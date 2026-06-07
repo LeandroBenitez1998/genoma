@@ -23,8 +23,8 @@ from openai import OpenAI
 # ── Config ──────────────────────────────────────────────────────────
 OLLAMA_BASE = "http://localhost:11434/v1"
 OLLAMA_MODEL = "gemma4:31b-cloud"
-EVOLUTION_DIR = Path.home() / ".hermes" / "hermes-agent-self-evolution" / "output"
-DATASETS_DIR = Path.home() / ".hermes" / "datasets"
+EVOLUTION_DIR = Path.home() / ".genoma" / "hermes-agent-self-evolution" / "output"
+DATASETS_DIR = Path.home() / ".genoma" / "datasets"
 
 client = OpenAI(base_url=OLLAMA_BASE, api_key="ollama")
 

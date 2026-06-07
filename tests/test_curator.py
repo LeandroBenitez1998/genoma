@@ -21,7 +21,7 @@ from fastapi.testclient import TestClient
 @pytest.fixture
 def temp_skills_dir(tmp_path):
     """Create a temporary skills directory structure for testing."""
-    skills_dir = tmp_path / ".hermes" / "skills"
+    skills_dir = tmp_path / ".genoma" / "skills"
     skills_dir.mkdir(parents=True)
 
     # Create a bundled manifest
@@ -408,7 +408,7 @@ class TestCuratorRun:
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     """Create a TestClient with patched curator paths and sample data."""
-    skills_dir = tmp_path / ".hermes" / "skills"
+    skills_dir = tmp_path / ".genoma" / "skills"
     skills_dir.mkdir(parents=True)
 
     # Create bundled manifest

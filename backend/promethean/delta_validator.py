@@ -17,7 +17,7 @@ from typing import Optional
 
 from .models import SkillGenesisPacket, CompilationResult, MetricSnapshot
 
-TRACES_DIR = Path.home() / ".hermes" / "traces"
+TRACES_DIR = Path.home() / ".genoma" / "traces"
 
 
 class DeltaValidator:
@@ -80,6 +80,9 @@ class DeltaValidator:
         primary_delta = abs(deltas.get(packet.metric, 0))
         passed = primary_delta >= packet.threshold
 
+        # Karpathy compliance assessment on the packet itself
+        karpathy = self._assess_karpathy_compliance(packet)
+
         snapshot = MetricSnapshot(
             skill_name=compilation.skill_name,
             baseline=baseline_metrics,
@@ -89,6 +92,7 @@ class DeltaValidator:
             passed=passed,
             dataset_size=len(dataset),
             holdout_size=holdout_size,
+            karpathy=karpathy,
         )
 
         # Save validation report
@@ -146,7 +150,7 @@ class DeltaValidator:
     # ── Internal: Report ────────────────────────────────────────────
     def _save_report(self, snapshot: MetricSnapshot, packet: SkillGenesisPacket):
         """Save validation report to disk."""
-        report_dir = Path.home() / ".hermes" / "traces" / "reports"
+        report_dir = Path.home() / ".genoma" / "traces" / "reports"
         report_dir.mkdir(parents=True, exist_ok=True)
 
         report = {
@@ -156,6 +160,7 @@ class DeltaValidator:
             "baseline": snapshot.baseline,
             "evolved": snapshot.evolved,
             "deltas": snapshot.deltas,
+            "karpathy": snapshot.karpathy,
             "threshold": snapshot.threshold,
             "passed": snapshot.passed,
             "dataset_size": snapshot.dataset_size,
@@ -165,6 +170,40 @@ class DeltaValidator:
 
         report_path = report_dir / f"validation_{snapshot.skill_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         report_path.write_text(json.dumps(report, indent=2))
+
+    def _assess_karpathy_compliance(self, packet: SkillGenesisPacket) -> dict:
+        """Assess how well the skill packet follows Karpathy principles."""
+        # Goal-Driven: clear metric and threshold
+        goal_driven = 1.0 if packet.metric and packet.threshold > 0 else 0.5
+
+        # Simplicity: focused intent (not too wordy)
+        intent_words = len(packet.intent.split())
+        if intent_words < 30:
+            simplicity = 1.0
+        elif intent_words < 50:
+            simplicity = 0.5
+        else:
+            simplicity = 0.2
+
+        # Surgical: the packet represents a single concern (always true for well-formed packets)
+        surgical = 1.0
+
+        # Think Before Coding: check if the intent references diagnosis/understanding
+        think_patterns = ["diagnos", "understand", "analyz", "detect", "identify", "root cause"]
+        thinking = 1.0 if any(p in packet.intent.lower() for p in think_patterns) else 0.5
+
+        score = round((goal_driven + simplicity + surgical + thinking) / 4, 3)
+
+        return {
+            "score": score,
+            "passed": score > 0.5,
+            "details": {
+                "goal_driven": goal_driven,
+                "simplicity": simplicity,
+                "surgical": surgical,
+                "thinking_before_coding": thinking,
+            },
+        }
 
     # ── Batch Validation ────────────────────────────────────────────
     def validate_all(

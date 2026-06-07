@@ -44,7 +44,7 @@ export default function DarkSelect({
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#1a1a1a] border border-white/[0.08] text-sm text-[#e5e5e5] hover:border-white/[0.15] transition-colors focus:outline-none focus:border-accent-violet/50"
       >
-        <span className={!selected ? "text-[#666]" : ""}>
+        <span className={!selected ? "text-white" : ""}>
           {selected ? selected.label : placeholder}
         </span>
         <ChevronDown

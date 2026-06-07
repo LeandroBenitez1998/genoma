@@ -22,16 +22,16 @@ class GlobalSkill:
     is_fork: bool = False
 
 class SimpleSkillRegistry:
-    GLOBAL_SKILLS_DIR = Path.home() / ".hermes" / "global_skills"
-    REGISTRY_DB = Path.home() / ".hermes" / "memory" / "skill_registry.json"
+    GLOBAL_SKILLS_DIR = Path.home() / ".genoma" / "global_skills"
+    REGISTRY_DB = Path.home() / ".genoma" / "memory" / "skill_registry.json"
     
     PROVIDER_SOURCES = {
         "claude-code": Path.home() / ".claude" / "skills",
         "opencode": Path.home() / ".opencode" / "skills",
         "kilocode": Path.home() / ".kilocode" / "skills",
         "antigravity": Path.home() / ".antigravity" / "providers",
-        "hermes": Path.home() / ".hermes" / "skills",
-        # "agency": Path.home() / ".hermes" / "hermes-agent" / "skills" / "agency",
+        "hermes": Path.home() / ".genoma" / "skills",
+        # "agency": Path.home() / ".genoma" / "hermes-agent" / "skills" / "agency",
     }
     
     def __init__(self):

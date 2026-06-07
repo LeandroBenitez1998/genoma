@@ -18,9 +18,9 @@ from pathlib import Path
 from typing import Optional
 
 # ── Paths ──────────────────────────────────────────────────────────
-USAGE_FILE = Path.home() / ".hermes" / "skills" / ".usage.json"
-CURATOR_LOG_DIR = Path.home() / ".hermes" / "logs" / "curator"
-SKILLS_DIR = Path.home() / ".hermes" / "skills"
+USAGE_FILE = Path.home() / ".genoma" / "skills" / ".usage.json"
+CURATOR_LOG_DIR = Path.home() / ".genoma" / "logs" / "curator"
+SKILLS_DIR = Path.home() / ".genoma" / "skills"
 ARCHIVE_DIR = SKILLS_DIR / ".archive"
 BUNDLED_MANIFEST = SKILLS_DIR / ".bundled_manifest"
 HUB_LOCK = SKILLS_DIR / ".hub" / "lock.json"
@@ -74,7 +74,7 @@ def _is_agent_created(skill_name: str) -> bool:
 # Additional skill directories to search
 EXTRA_SKILL_DIRS = [
     Path.home() / ".claude" / "skills",
-    Path.home() / ".hermes" / "hermes-agent" / "skills",
+    Path.home() / ".genoma" / "hermes-agent" / "skills",
 ]
 
 
@@ -451,7 +451,7 @@ def run_curator_review(sync: bool = False, python_bin: str = "python3") -> dict:
     and the curator runs as a subprocess.
     """
     # Check if there's curator CLI
-    curator_script = Path.home() / ".hermes" / "hermes-agent" / "hermes_cli" / "curator.py"
+    curator_script = Path.home() / ".genoma" / "hermes-agent" / "hermes_cli" / "curator.py"
     
     if curator_script.exists():
         # Upstream curator available
@@ -646,7 +646,7 @@ def _find_skill_path(skill_name: str) -> Optional[Path]:
     """Find skill SKILL.md file by name across all known locations."""
     search_dirs = [
         Path.home() / ".claude" / "skills",
-        Path.home() / ".hermes" / "skills",
+        Path.home() / ".genoma" / "skills",
         SKILLS_DIR,
     ]
 

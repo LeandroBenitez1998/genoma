@@ -105,7 +105,7 @@ class SkillEvolver:
 
     def _find_evolved_skill(self, skill_name: str) -> Optional[Path]:
         """Find the most recently evolved skill in ~/.hermes output."""
-        output_base = Path.home() / ".hermes" / "hermes-agent-self-evolution" / "output" / skill_name
+        output_base = Path.home() / ".genoma" / "hermes-agent-self-evolution" / "output" / skill_name
         if not output_base.exists():
             return None
 

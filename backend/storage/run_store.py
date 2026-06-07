@@ -9,7 +9,7 @@ from typing import Optional
 from backend.promethean.models import CanonicalRun
 
 
-DB_PATH = Path.home() / ".hermes" / "runs.db"
+DB_PATH = Path.home() / ".genoma" / "runs.db"
 
 
 class RunStore:

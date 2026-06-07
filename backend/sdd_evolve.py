@@ -72,8 +72,8 @@ else:
     print(f"[INFO] No cloud keys found — falling back to Ollama local at {API_BASE} with model {DEFAULT_MODEL}", flush=True)
 
 SKILL_SEARCH_PATHS = [
-    Path.home() / ".hermes" / "global_skills",
-    Path.home() / ".hermes" / "skills",
+    Path.home() / ".genoma" / "global_skills",
+    Path.home() / ".genoma" / "skills",
     Path.home() / ".claude" / "skills",
     Path.home() / ".opencode" / "skills",
 ]
@@ -402,7 +402,7 @@ def evolve_skill(skill_name: str, iterations: int = 3, hermes_repo: Optional[str
         log.score(k, v)
 
     # 5. Save outputs
-    output_base = Path.home() / ".hermes" / "hermes-agent-self-evolution" / "output" / skill_name
+    output_base = Path.home() / ".genoma" / "hermes-agent-self-evolution" / "output" / skill_name
     run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_dir = output_base / run_id
     run_dir.mkdir(parents=True, exist_ok=True)

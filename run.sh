@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-cd /Users/leandrothomas/Desktop/Projects/genoma
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 # Install deps once (silent)
 echo "Installing dependencies..."

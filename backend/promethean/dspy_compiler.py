@@ -17,7 +17,7 @@ from typing import Optional
 
 from .models import SkillGenesisPacket, CompilationResult
 
-SKILLS_DIR = Path.home() / ".hermes" / "skills"
+SKILLS_DIR = Path.home() / ".genoma" / "skills"
 
 
 class DSPyCompiler:
@@ -58,7 +58,7 @@ class DSPyCompiler:
         """Direct DSPy BetterTogether compilation."""
         compilation_script = self._generate_compilation_script(packet, attempt)
 
-        script_path = Path.home() / ".hermes" / "traces" / "processed" / f"compile_{packet.packet_id}.py"
+        script_path = Path.home() / ".genoma" / "traces" / "processed" / f"compile_{packet.packet_id}.py"
         script_path.parent.mkdir(parents=True, exist_ok=True)
         script_path.write_text(compilation_script)
 
@@ -133,7 +133,7 @@ class DSPyCompiler:
 
     def _compile_with_script(self, packet: SkillGenesisPacket, attempt: int) -> CompilationResult:
         """Fallback: use existing evolution scripts when DSPy module import fails."""
-        evolution_dir = Path.home() / ".hermes" / "hermes-agent-self-evolution"
+        evolution_dir = Path.home() / ".genoma" / "hermes-agent-self-evolution"
         evolve_script = evolution_dir / "evolve_now.py"
 
         if not evolve_script.exists():
